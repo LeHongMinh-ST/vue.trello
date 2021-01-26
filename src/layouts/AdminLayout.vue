@@ -10,7 +10,7 @@
               <el-avatar
                   src="https://i.pinimg.com/originals/eb/59/fc/eb59fc8a76791bc31663723c03c875d2.jpg"></el-avatar>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>Thông tin</el-dropdown-item>
+                <el-dropdown-item><router-link to="/profile">Thông tin</router-link></el-dropdown-item>
                 <el-dropdown-item divided><router-link to="/login">Đăng xuất</router-link></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

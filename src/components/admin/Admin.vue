@@ -5,7 +5,9 @@
         Main Header
       </div>
       <div class="main-content">
-
+        <div class="listTodo">
+          <div class="todo"></div>
+        </div>
       </div>
     </template>
   </AdminLayout>
@@ -29,5 +31,11 @@ export default {
   overflow: hidden;
   padding: 0;
   background-color: rgba(0, 0, 0, .32);
+}
+
+.listTodo{
+  background: red;
+  width: 250px;
+  height: 500px;
 }
 </style>

@@ -1,10 +1,14 @@
 <template>
-  <div></div>
+  <Profile></Profile>
 </template>
 
 <script>
+import Profile from "@/components/admin/Profile";
 export default {
-  name: "Profile"
+  name: "Profile",
+  components:{
+    Profile
+  }
 }
 </script>
 
