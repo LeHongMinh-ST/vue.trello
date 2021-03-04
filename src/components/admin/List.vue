@@ -1,13 +1,247 @@
 <template>
-$END$
+  <div class="listWrapper">
+    <div class="listContent">
+      <div class="listHeader">
+        <textarea class="list-header-name list-header-edit-name" @keydown.enter="$event.target.blur()" name="" id=""
+                  cols="30" rows="10" v-model="listTitle" placeholder="Nhập vào tiêu đề danh sách..."
+        ></textarea>
+        <div class="menu"><i class="el-icon-more"></i></div>
+      </div>
+      <div class="listCard">
+        <draggable
+            class="dragArea list-group"
+            :list="item.cards"
+            item-key="id"
+            :animation="100"
+            group="todo"
+        >
+          <Todo v-for="card in item.cards" :key="card.id" :card="card"/>
+        </draggable>
+        <NewCard v-if="cardAddOpen" v-click-outside="closeAddCard" @closeAddCard="closeAddCard" :list="item"></NewCard>
+      </div>
+      <div class="listFooter" v-if="!cardAddOpen">
+        <div class="openCard" @click="openAddCard">
+          <span class="icon-add-card"><i class="el-icon-plus"></i></span>
+          <span class="text-add-card">Thêm thẻ khác</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import Todo from "@/components/admin/Todo";
+import draggable from 'vuedraggable'
+import ClickOutside from 'vue-click-outside'
+import NewCard from "@/components/include/NewCard";
+
 export default {
-name: "List"
+  name: "List",
+  props: ['item', 'index'],
+  data() {
+    return {
+      'listTitle': '',
+      'cardAddOpen': false,
+    }
+  },
+  components: {
+    Todo,
+    draggable,
+    NewCard
+  },
+  methods: {
+    loadTitle() {
+      this.listTitle = this.item.title;
+    },
+    openAddCard() {
+      this.cardAddOpen = true;
+    },
+
+    closeAddCard() {
+      this.cardAddOpen = false;
+    }
+  },
+  mounted() {
+    this.loadTitle();
+    // prevent click outside event with popupItem.
+    this.popupItem = this.$el
+  },
+  updated() {
+    this.loadTitle();
+  },
+
+  // do not forget this section
+  directives: {
+    ClickOutside
+  }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.listWrapper {
+  width: 272px;
+  margin: 0 4px;
+  height: 100%;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
 
+  .listContent {
+    background-color: #ebecf0;
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    position: relative;
+    white-space: normal;
+
+
+    .listHeader {
+      flex: 0 0 auto;
+      display: flex;
+      padding-left: 15px;
+      position: relative;
+      min-height: 20px;
+      max-height: 40px;
+
+      .list-header-target {
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .menu {
+        margin: 6px 4px 4px 4px;
+        padding: 6px;
+        text-align: center;
+        cursor: pointer;
+        line-height: 20px;
+        height: 28px;
+        width: 28px;
+        z-index: 99;
+        font-size: 16px;
+      }
+
+      .menu:hover {
+        background-color: rgba(9, 30, 66, .08);
+        //border-radius: 2px;
+      }
+
+      .list-header-name {
+        height: 28px;
+        margin: 0;
+      }
+
+      .list-header-edit-name {
+        resize: none;
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: 600;
+        background-color: #ebecf0;
+        border: none;
+        height: 28px;
+        width: 98%;
+        margin: 6px 0;
+        padding: 4px 0 4px 8px;
+        cursor: pointer;
+      }
+
+      textarea:focus {
+        outline: none;
+        background-color: white !important;
+        box-shadow: inset 0 0 0 2px #0079bf;
+        border-color: #0079bf;
+        overflow: hidden;
+        overflow-wrap: break-word;
+        border-radius: 5px;
+      }
+
+      textarea::-webkit-input-placeholder{
+
+      }
+    }
+
+    .listFooter {
+      min-height: 38px;
+      max-height: 38px;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      margin-bottom: 8px;
+
+      .openCard {
+        border-radius: 3px;
+        color: #5e6c84;
+        display: block;
+        flex: 1 0 auto;
+        margin: 2px 10px 2px 10px;
+        padding: 8px 8px;
+        position: relative;
+        text-decoration: none;
+        -webkit-user-select: none;
+        user-select: none;
+        text-align: left;
+        cursor: pointer;
+
+        .icon-add-card {
+          margin-right: 2px;
+        }
+
+        .text-add-card {
+          font-size: 14px;
+        }
+      }
+
+      .openCard:hover {
+        background-color: rgba(9, 30, 66, .08);
+        color: #172b4d;
+      }
+    }
+
+    .listCard {
+      flex: 1 1 auto;
+      margin-bottom: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      margin: 0 4px;
+      padding: 0 4px;
+      z-index: 1;
+      min-height: 0;
+
+
+    }
+
+    /* width */
+    .listCard::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    /* Track */
+    .listCard::-webkit-scrollbar-track {
+      border-radius: 7px;
+      background-color: #4f4f5073;
+    }
+
+    /* Handle */
+    .listCard::-webkit-scrollbar-thumb {
+      background: #bcbcbe63;
+      border-radius: 7px;
+    }
+
+    /* Handle on hover */
+    .listCard::-webkit-scrollbar-thumb:hover {
+      background: #d3d3d87d;
+    }
+  }
+
+}
+
+.listWrapper:first-child {
+  margin-left: 8px;
+}
 </style>

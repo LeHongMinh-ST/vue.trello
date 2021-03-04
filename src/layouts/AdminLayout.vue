@@ -3,8 +3,8 @@
     <el-container class="adminWrap">
       <el-header class="adminHeader">
         <div class="header-container">
-          <div class="header-left">left</div>
-          <div class="header-center">center</div>
+          <div class="header-left"></div>
+          <div class="header-center"></div>
           <div class="header-right">
             <el-dropdown>
               <el-avatar
@@ -41,9 +41,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url("../assets/image/we-bare-bears-wallpaper-94-images.jpg");
+  background-image: url("../assets/image/wp1874701-we-bare-bears-wallpapers.jpg");
   .adminWrap {
     height: 100%;
+    display: flex;
+    flex-direction: column;
 
     .adminHeader {
       min-height: 40px;
@@ -72,8 +74,14 @@ export default {
     }
 
     .adminMain{
-      padding: 15px;
+      position: relative;
+      overflow-y: hidden;
+      outline: none;
+      padding: 0;
+      height: 100%;
     }
+
+
   }
 }
 </style>
