@@ -29,18 +29,20 @@ export default {
       this.$emit('closeNewList')
     },
     AddList(){
-      let newList = {
-        "id": new Date().getTime(),
-        "title": this.$refs.title.value,
-        "user_id": 1,
-        "index": this.list.length +1,
-        "created_at": null,
-        "updated_at": null,
-        "cards": []
+      if (this.$refs.title.value.length>0){
+        let newList = {
+          "id": new Date().getTime(),
+          "title": this.$refs.title.value,
+          "user_id": 1,
+          "index": this.list.length +1,
+          "created_at": null,
+          "updated_at": null,
+          "cards": []
+        }
+        // console.log(newList)
+        this.addList(newList)
+        this.closeNewList()
       }
-      // console.log(newList)
-      this.addList(newList)
-      this.closeNewList()
     },
     ...mapMutations('home',[
       'addList'
@@ -83,7 +85,6 @@ export default {
       padding-right: 5px;
       position: relative;
       min-height: 20px;
-      max-height: 40px;
 
       .list-header-target {
         cursor: pointer;
@@ -119,14 +120,14 @@ export default {
       .list-header-edit-name {
         resize: none;
         font-size: 16px;
-        line-height: 20px;
+        line-height: 28px;
         font-weight: 600;
         background-color: #ebecf0;
         border: none;
-        height: 28px;
+        height: 36px;
         width: 98%;
         margin: 6px 0;
-        padding: 4px 8px 4px 8px;
+        padding: 4px 10px 4px 10px;
         cursor: pointer;
       }
 
@@ -137,7 +138,12 @@ export default {
         border-color: #0079bf;
         overflow: hidden;
         overflow-wrap: break-word;
-        border-radius: 5px;
+        border-radius: 2px;
+      }
+
+      textarea::-webkit-input-placeholder {
+        font-weight: 200;
+        font-size: 14px;
       }
     }
 

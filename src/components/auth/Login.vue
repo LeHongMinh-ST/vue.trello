@@ -4,12 +4,33 @@
       <main class="loginWrap">
         <div class="logoWrap">
           <img class="logo" src="../../assets/image/logo.jpg" alt=""></div>
+        <el-form :model="loginForm" :rules="rules" ref="ruleForm">
+          <div class="formInputWrap">
+            <div class="sui-input-wrap">
+              <div class="sui-input-prefix"></div>
+              <el-form-item prop="email">
+                <el-input placeholder="Email" v-model="loginForm.email" autocomplete="off"></el-input>
+              </el-form-item>
+              <div class="sui-input-subfix"></div>
+            </div>
+          </div>
+          <div class="formInputWrap">
+            <div class="sui-input-wrap">
+              <div class="sui-input-prefix"></div>
+              <el-form-item prop="password">
+                <el-input placeholder="Mật khẩu" type="password" v-model="loginForm.password"
+                          autocomplete="off"></el-input>
+              </el-form-item>
+              <div class="sui-input-subfix"></div>
+            </div>
+          </div>
 
-        <button class="submitButton"
-                tabindex="0" type="button" @click="submitLogin()">
-          <span class="btnLabel">ĐĂNG NHẬP</span>
-          <span class="MuiTouchRipple-root"></span>
-        </button>
+          <button class="submitButton"
+                  tabindex="0" type="button" @click="submitLogin()">
+            <span class="btnLabel">ĐĂNG KÝ</span>
+            <span class="MuiTouchRipple-root"></span>
+          </button>
+        </el-form>
 
         <div class="returnRegisterWrap">
           <button class="registerBtn">
@@ -24,19 +45,74 @@
 
 <script>
 import LoginLayout from "@/layouts/LoginLayout";
+import {mapState, mapActions, mapMutations} from 'vuex'
+import axios from 'axios'
 
 export default {
   name: "Login",
   components: {
     LoginLayout
   },
-  methods:{
-    register(){
+  methods: {
+    ...mapActions,
+    ...mapMutations('auth', ['updateLoginStatus', 'updateAuthUser']),
+    register() {
       this.$router.push('/register')
     },
+    submitLogin() {
 
-    submitLogin(){
-      this.$router.push('/admin')
+
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          axios({
+            method: 'post',
+            url: 'http://vuecourse.zent.edu.vn/api/auth/login',
+            data: {
+              email: this.loginForm.email,
+              password: this.loginForm.password,
+            },
+          }).then((response) => {
+            this.$message({
+              message: 'Success',
+              type: 'success'
+            });
+            localStorage.setItem('access_token', response.data.access_token);
+            this.updateLoginStatus({isAuthenticated: true})
+            if (this.$router.currentRoute.name !== 'Home') {
+              this.$router.push('/admin')
+            }
+          }).catch(() => {
+            this.$message({
+              message: 'Có 1 lỗi gì đó',
+              type: 'error'
+            });
+          })
+        } else {
+          return false;
+        }
+      });
+    }
+  },
+  computed: {
+    ...mapState('auth', ['isAuthenticated']),
+  },
+  created() {
+    if (this.isAuthenticated) this.$router.push({name: 'Admin'})
+  },
+  data() {
+    return {
+      loginForm: {
+        email: "",
+        password: "",
+      },
+      rules: {
+        email: [
+          {required: true, message: 'Vui lòng nhập email!', trigger: 'blur'},
+        ],
+        password: [
+          {required: true, message: 'Vui lòng nhập mật khẩu!', trigger: 'blur'},
+        ],
+      },
     }
   }
 }
@@ -65,6 +141,159 @@ export default {
       border-style: none;
     }
   }
+
+  .formInputWrap {
+    margin-bottom: 24px;
+
+
+    .formInput {
+      border-radius: 4px;
+      height: 50px;
+    }
+
+    .error {
+      border-color: #ee4f5e !important;
+    }
+
+    .sui-error-message {
+      display: flex;
+      align-items: center;
+      color: #ee4f5e;
+      margin-top: 8px;
+      font-size: 12px;
+
+      .sui-error-message-icon {
+        color: #ee4f5e;
+        font-size: 12px;
+        margin-right: 4px;
+        height: 12px;
+      }
+    }
+
+
+    .sui-input-wrap {
+      position: relative;
+      height: 50px;
+      //width: 100%;
+
+      .sui-input {
+        box-sizing: border-box;
+        //position: absolute;
+        width: 100%;
+        //height: 100%;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 18px;
+        color: #253036;
+        border-radius: 4px;
+        height: 50px;
+        border: 1px solid #d8e0ea;
+        outline: unset;
+
+        &:hover,
+        &:active,
+        &:focus {
+          border: 1px solid #0080dd;
+        }
+
+        &.has-error {
+          border: 1px solid #f54b5e;
+        }
+
+        &.read-only {
+          background: #0093e9;
+        }
+      }
+
+      .sui-input-prefix {
+        position: absolute;
+        top: 0;
+        left: 12px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sui-input-subfix {
+        position: absolute;
+        top: 0;
+        right: 12px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &.sui-input-has-prefix {
+        .sui-input {
+          padding-left: 40px;
+        }
+      }
+
+      &.sui-input-has-subfix {
+        .sui-input {
+          padding-right: 40px;
+        }
+      }
+
+      .sui-input-clear {
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        right: 12px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        //.sui-input-clear-icon {
+        //  color: $colorSecond;
+        //}
+      }
+    }
+
+  }
+
+  .forgotPwdTitle {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .forgotPwdDescription {
+    font-size: 14px;
+    color: #54657a;
+    margin-bottom: 8px;
+  }
+
+  .forgotPwdWrap {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .forgotPwdBtn {
+      color: #0080dd;
+      line-height: 18px;
+      background: transparent;
+      border-radius: 4px;
+      text-transform: none;
+      border: none;
+
+      background: none;
+      outline: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 6px 8px;
+    }
+
+    .forgotPwdBtn:hover {
+      background: #F5F5F5;
+    }
+  }
+
 
   .submitButton {
     width: 100%;
@@ -117,7 +346,7 @@ export default {
       background: none;
       padding: 6px 8px;
       box-sizing: border-box;
-      transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
       font-family: "Roboto", "Helvetica", "Arial", sans-serif;
       font-weight: 500;
       border: 0;

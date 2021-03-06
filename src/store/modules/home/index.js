@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default {
     namespaced: true,
     state: {
+        labelShow: false,
         // Khai báo state
         list: [
             {
@@ -182,6 +183,10 @@ export default {
         },
         addList(state, data){
             state.list.push(data)
-        }
+        },
+        showLable(state){
+            state.labelShow = !state.labelShow
+        },
+
     },
 }

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import home from './modules/home/index'
 import profile from './modules/profile/index'
+import auth from './modules/auth/index'
 
 Vue.use(Vuex)
 
@@ -14,7 +15,8 @@ const store = new Vuex.Store({
     },
     modules: {
         home,
-        profile
+        profile,
+        auth
     }
 })
 

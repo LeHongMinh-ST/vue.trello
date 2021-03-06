@@ -3,7 +3,64 @@
     <router-view/>
   </div>
 </template>
+<script>
+import {mapState, mapMutations } from 'vuex'
+import axios from 'axios'
+export default {
+  name: 'App',
+  computed: {
+    ...mapState('auth', ['isAuthenticated']),
+  },
+  methods: {
+    ...mapMutations('auth', ['updateLoginStatus','updateAuthUser']),
+    async handleLogout() {
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('vuex')
+      this.updateLoginStatus({
+        isAuthenticated: false,
+      })
 
+      this.updateAuthUser({
+        authUser: {},
+      })
+      if (this.$router.currentRoute.name !== 'Login') {
+        await this.$router.push({ name: 'Login' })
+      }
+    }
+  },
+  mounted() {
+    axios({
+      method: 'get',
+      url: 'http://vuecourse.zent.edu.vn/api/auth/me',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+      }
+    }).then((response) => {
+      this.updateLoginStatus({
+        isAuthenticated: true,
+      })
+
+      this.updateAuthUser({
+        authUser:  response.data,
+      })
+    }).catch((error) => {
+      if (error.response.status === 401) {
+        this.updateLoginStatus({
+          isAuthenticated: false,
+        })
+
+        this.updateAuthUser({
+          authUser: {},
+        })
+        localStorage.removeItem('access_token')
+        if (this.$router.currentRoute.name !== 'Login') {
+          this.$router.push({ name: 'Login' })
+        }
+      }
+    })
+  }
+}
+</script>
 <style lang="scss">
 html,body{
   margin: 0;

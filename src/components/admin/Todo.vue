@@ -4,6 +4,12 @@
       <span class="btn-edit">
         <i class="el-icon-edit"></i>
       </span>
+      <div class="list-card-labels">
+        <span class="card-label card-label-default mod-card-front" @click="showLable"
+              :class="[{'labelShow' :labelShow}, 'card-label-'+label.color]"  v-for="label in card.labels" :key="label.id" title="LMS Thầy thiện">
+          <span class="label-text" v-if="labelShow">{{ label.name }}</span>
+        </span>
+      </div>
       <p class="text-title">{{ card.title }}</p>
       <div class="badges">
         <span class="js-badges">
@@ -31,21 +37,32 @@
 </template>
 
 <script>
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import {mapMutations, mapState} from "vuex";
 
 export default {
   name: "Todo",
   props: ['card'],
   data() {
     return {
-      modalShow: false
+      modalShow: false,
     }
+  },
+  methods:{
+    ...mapMutations('home',[
+        'showLable'
+    ])
+  },
+  computed:{
+    ...mapState('home',[
+        'labelShow'
+    ])
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "../../assets/scss/card_color";
+
 .cardTodo {
   width: 100%;
   max-height: 162px;
@@ -68,6 +85,31 @@ export default {
     padding: 12px 8px 0 8px;
     position: relative;
     z-index: 10;
+
+    .list-card-labels {
+      overflow: auto;
+      position: relative;
+
+      .card-label {
+        height: 8px;
+        line-height: 16px;
+        padding: 0 8px;
+        max-width: 198px;
+        text-shadow: none;
+        width: auto;
+        min-width: 40px;
+        margin: 0 4px 4px 0;
+        float: left;
+        font-size: 12px;
+        font-weight: 700;
+        color: #fff;
+        border-radius: 5px;
+      }
+
+      .labelShow {
+        height: 16px !important;
+      }
+    }
 
     .btn-edit {
       background-color: #f4f5f7;

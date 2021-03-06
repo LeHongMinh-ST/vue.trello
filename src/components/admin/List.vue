@@ -2,8 +2,9 @@
   <div class="listWrapper">
     <div class="listContent">
       <div class="listHeader">
-        <textarea class="list-header-name list-header-edit-name" @keydown.enter="$event.target.blur()" name="" id=""
-                  cols="30" rows="10" v-model="listTitle" placeholder="Nhập vào tiêu đề danh sách..."
+        <textarea class="list-header-name list-header-edit-name"
+                  @keydown.enter="$event.target.blur()" name="" id=""
+                  cols="30" rows="10" :value="listTitle" placeholder="Nhập vào tiêu đề danh sách..."
         ></textarea>
         <div class="menu"><i class="el-icon-more"></i></div>
       </div>
@@ -63,7 +64,6 @@ export default {
   },
   mounted() {
     this.loadTitle();
-    // prevent click outside event with popupItem.
     this.popupItem = this.$el
   },
   updated() {
@@ -72,7 +72,7 @@ export default {
 
   // do not forget this section
   directives: {
-    ClickOutside
+    ClickOutside,
   }
 }
 </script>
@@ -101,10 +101,9 @@ export default {
     .listHeader {
       flex: 0 0 auto;
       display: flex;
-      padding-left: 15px;
+      padding-left: 10px;
       position: relative;
       min-height: 20px;
-      max-height: 40px;
 
       .list-header-target {
         cursor: pointer;
@@ -121,8 +120,8 @@ export default {
         text-align: center;
         cursor: pointer;
         line-height: 20px;
-        height: 28px;
-        width: 28px;
+        height: 22px;
+        width: 22px;
         z-index: 99;
         font-size: 16px;
       }
@@ -133,7 +132,7 @@ export default {
       }
 
       .list-header-name {
-        height: 28px;
+        height: 22px;
         margin: 0;
       }
 
@@ -144,7 +143,7 @@ export default {
         font-weight: 600;
         background-color: #ebecf0;
         border: none;
-        height: 28px;
+        height: 22px;
         width: 98%;
         margin: 6px 0;
         padding: 4px 0 4px 8px;
@@ -158,11 +157,13 @@ export default {
         border-color: #0079bf;
         overflow: hidden;
         overflow-wrap: break-word;
-        border-radius: 5px;
+        border-radius: 2px;
+        user-select: all;
       }
 
-      textarea::-webkit-input-placeholder{
-
+      textarea::-webkit-input-placeholder {
+        font-weight: 200;
+        font-size: 14px;
       }
     }
 

@@ -36,26 +36,29 @@ export default {
       let title= this.$refs.cardTitle.value
       let d= new Date()
 
-      let index = this.getList(this.list.id).cards.length +1
-      let card = {
-        id: d.getTime(),
-        title: title,
-        description: "",
-        status: 1,
-        directory_id: 1,
-        index: index,
-        deadline: null,
-        user_id: 1,
-        created_at: null,
-        updated_at: null,
-        labels: []
+      if (title.length > 0){
+        let index = this.getList(this.list.id).cards.length +1
+        let card = {
+          id: d.getTime(),
+          title: title,
+          description: "",
+          status: 1,
+          directory_id: 1,
+          index: index,
+          deadline: null,
+          user_id: 1,
+          created_at: null,
+          updated_at: null,
+          labels: []
+        }
+        let data={
+          list_id: this.list.id,
+          card: card
+        }
+        this.addCard(data)
+        this.closeAddCard()
       }
-      let data={
-        list_id: this.list.id,
-        card: card
-      }
-      this.addCard(data)
-      this.closeAddCard()
+
     }
   },
   mounted() {

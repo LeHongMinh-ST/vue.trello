@@ -4,11 +4,21 @@
 
 <script>
 import Login from "@/components/auth/Login";
-
+import {mapState} from 'vuex'
 export default {
   name: "LoginView",
   components: {
     Login
+  },
+  computed:{
+    ...mapState('auth',[
+        'isAuthenticated'
+    ])
+  },
+  created() {
+    if (this.isAuthenticated){
+      this.$router.push({name:'Admin'})
+    }
   }
 }
 </script>
