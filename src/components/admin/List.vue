@@ -55,6 +55,7 @@ export default {
       this.listTitle = this.item.title;
     },
     openAddCard() {
+      console.log('a')
       this.cardAddOpen = true;
     },
 

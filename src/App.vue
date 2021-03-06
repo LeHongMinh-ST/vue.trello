@@ -5,7 +5,7 @@
 </template>
 <script>
 import {mapState, mapMutations } from 'vuex'
-import axios from 'axios'
+import api from './api'
 export default {
   name: 'App',
   computed: {
@@ -23,19 +23,14 @@ export default {
       this.updateAuthUser({
         authUser: {},
       })
+
       if (this.$router.currentRoute.name !== 'Login') {
         await this.$router.push({ name: 'Login' })
       }
     }
   },
   mounted() {
-    axios({
-      method: 'get',
-      url: 'http://vuecourse.zent.edu.vn/api/auth/me',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`
-      }
-    }).then((response) => {
+    api.getAuthUser().then((response) => {
       this.updateLoginStatus({
         isAuthenticated: true,
       })
@@ -43,20 +38,7 @@ export default {
       this.updateAuthUser({
         authUser:  response.data,
       })
-    }).catch((error) => {
-      if (error.response.status === 401) {
-        this.updateLoginStatus({
-          isAuthenticated: false,
-        })
-
-        this.updateAuthUser({
-          authUser: {},
-        })
-        localStorage.removeItem('access_token')
-        if (this.$router.currentRoute.name !== 'Login') {
-          this.$router.push({ name: 'Login' })
-        }
-      }
+    }).catch(() => {
     })
   }
 }
@@ -76,6 +58,28 @@ body, button, html, input, select, textarea {
   font-weight: 400;
 }
 
+body .nch-button {
+  color: #172b4d;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 6px 12px;
+  text-decoration: none;
+  background-color: rgba(9,30,66,.04);
+  box-shadow: none;
+  border: none;
+  transition-property: background-color,border-color,box-shadow;
+  transition-duration: 85ms;
+  transition-timing-function: ease;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -83,6 +87,10 @@ body, button, html, input, select, textarea {
   text-align: center;
   color: #2c3e50;
   height: 100%;
+}
+h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  margin: 0 0 8px;
 }
 
 #nav {
@@ -96,5 +104,44 @@ body, button, html, input, select, textarea {
       color: #42b983;
     }
   }
+}
+
+.el-dialog__header{
+  display: none;
+}
+
+.el-dialog__body{
+  padding: 0 !important;
+  background-color: #f4f5f7;
+}
+
+.el-progress__text{
+  float: left;
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+.button-link {
+  background-color: rgba(9,30,66,.04);
+  box-shadow: none;
+  border: none;
+  border-radius: 3px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: block;
+  height: 32px;
+  margin-top: 8px;
+  max-width: 300px;
+  overflow: hidden;
+  padding: 6px 12px;
+  position: relative;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  -webkit-user-select: none;
+  user-select: none;
+  white-space: nowrap;
+  transition-property: background-color,border-color,box-shadow;
+  transition-duration: 85ms;
+  transition-timing-function: ease;
 }
 </style>

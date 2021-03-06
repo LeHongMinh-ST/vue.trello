@@ -11,7 +11,7 @@
                   src="https://i.pinimg.com/originals/eb/59/fc/eb59fc8a76791bc31663723c03c875d2.jpg"></el-avatar>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item><router-link to="/profile">Thông tin</router-link></el-dropdown-item>
-                <el-dropdown-item divided><router-link to="/login">Đăng xuất</router-link></el-dropdown-item>
+                <el-dropdown-item @click="handleLogout">Đăng xuất</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -25,8 +25,29 @@
 </template>
 
 <script>
+import {mapMutations} from "vuex";
+
 export default {
-  name: "AdminLayout"
+  name: "AdminLayout",
+  methods:{
+    ...mapMutations('auth', ['updateLoginStatus','updateAuthUser']),
+    async handleLogout() {
+      console.log('a')
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('vuex')
+      this.updateLoginStatus({
+        isAuthenticated: false,
+      })
+
+      this.updateAuthUser({
+        authUser: {},
+      })
+
+      if (this.$router.currentRoute.name !== 'Login') {
+        await this.$router.push({ name: 'Login' })
+      }
+    }
+  }
 }
 </script>
 

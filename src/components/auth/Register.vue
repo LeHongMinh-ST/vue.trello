@@ -10,8 +10,8 @@
               <div class="sui-input-prefix"></div>
               <el-form-item prop="name">
                 <el-input placeholder="Họ và tên" v-model="registerForm.name" autocomplete="off"></el-input>
-<!--                <input class="sui-input formInput" type="text"-->
-<!--                       placeholder="Email" value="" v-model="registerForm.name">-->
+                <!--                <input class="sui-input formInput" type="text"-->
+                <!--                       placeholder="Email" value="" v-model="registerForm.name">-->
               </el-form-item>
               <div class="sui-input-subfix"></div>
             </div>
@@ -66,7 +66,7 @@
 
 <script>
 import LoginLayout from "@/layouts/LoginLayout";
-import axios from 'axios'
+import api from '../../api'
 
 export default {
   name: "Register",
@@ -80,25 +80,15 @@ export default {
     handleRegister() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          axios({
-            method: 'post',
-            url: 'http://vuecourse.zent.edu.vn/api/auth/register',
-            data: {
-              name: this.registerForm.name,
-              email: this.registerForm.email,
-              password: this.registerForm.password,
-            },
-          }).then(() => {
-            this.$message({
-              message: 'Đăng kí thành công',
-              type: 'success'
-            });
-
+          let data = {
+            name: this.registerForm.name,
+            email: this.registerForm.email,
+            password: this.registerForm.password,
+          };
+          api.register(data).then(() => {
+            this.$message({message: 'Đăng kí thành công', type: 'success'});
           }).catch(() => {
-            this.$message({
-              message: 'Có một lỗi gì gì đó!',
-              type: 'error'
-            });
+            this.$message({message: 'Error', type: 'error'});
           })
         } else {
           return false;

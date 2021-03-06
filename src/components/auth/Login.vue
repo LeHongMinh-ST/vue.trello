@@ -27,7 +27,7 @@
 
           <button class="submitButton"
                   tabindex="0" type="button" @click="submitLogin()">
-            <span class="btnLabel">ĐĂNG KÝ</span>
+            <span class="btnLabel">ĐĂNG NHẬP</span>
             <span class="MuiTouchRipple-root"></span>
           </button>
         </el-form>
@@ -46,7 +46,7 @@
 <script>
 import LoginLayout from "@/layouts/LoginLayout";
 import {mapState, mapActions, mapMutations} from 'vuex'
-import axios from 'axios'
+import api from '../../api'
 
 export default {
   name: "Login",
@@ -60,32 +60,21 @@ export default {
       this.$router.push('/register')
     },
     submitLogin() {
-
-
       this.$refs.ruleForm.validate((valid) => {
+        let data= {
+          email: this.loginForm.email,
+          password: this.loginForm.password,
+        }
         if (valid) {
-          axios({
-            method: 'post',
-            url: 'http://vuecourse.zent.edu.vn/api/auth/login',
-            data: {
-              email: this.loginForm.email,
-              password: this.loginForm.password,
-            },
-          }).then((response) => {
-            this.$message({
-              message: 'Success',
-              type: 'success'
-            });
-            localStorage.setItem('access_token', response.data.access_token);
+          api.login(data).then((response) => {
+            this.$message({message: 'Xin chào ', type: 'success'});
+            localStorage.setItem('access_token', response.data.access_token)
             this.updateLoginStatus({isAuthenticated: true})
-            if (this.$router.currentRoute.name !== 'Home') {
-              this.$router.push('/admin')
+            if (this.$router.currentRoute.name !== 'Admin') {
+              this.$router.push({ name: 'Admin' })
             }
           }).catch(() => {
-            this.$message({
-              message: 'Có 1 lỗi gì đó',
-              type: 'error'
-            });
+            this.$message({message: 'Có 1 lỗi gì đó', type: 'error'});
           })
         } else {
           return false;

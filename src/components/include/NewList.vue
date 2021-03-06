@@ -120,7 +120,7 @@ export default {
       .list-header-edit-name {
         resize: none;
         font-size: 16px;
-        line-height: 28px;
+        line-height: 34px;
         font-weight: 600;
         background-color: #ebecf0;
         border: none;
