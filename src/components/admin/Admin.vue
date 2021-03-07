@@ -17,7 +17,7 @@
                 :animation="100"
                 :move="moveList"
             >
-              <List v-for="item in list" :id="item.id" :key="item.index" @updateCardList="getDataList" @updateListTitle="handleUpdateList"
+              <List v-for="(item,index) in list" :id="item.id" :key="index" @updateCardList="getDataList" @updateListTitle="handleUpdateList"
                     :index="item.index" :item="item"/>
             </draggable>
 
@@ -69,7 +69,7 @@ export default {
       let id = e.draggedContext.element.id
 
       let payload = {
-        index : e.draggedContext.futureIndex+1,
+        index : e.draggedContext.futureIndex,
       }
       if (id !== e.draggedContext.futureIndex){
         api.changeIndexList(payload,id).then(()=>{
@@ -117,7 +117,7 @@ export default {
     this.loadData()
   },
   updated() {
-    // this.getDataList()
+    this.getDataList()
     this.loadData()
   },
 

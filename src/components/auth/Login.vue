@@ -70,6 +70,7 @@ export default {
             console.log(response)
             localStorage.setItem('access_token', response.data.access_token)
             this.updateLoginStatus(true)
+
             if (this.$router.currentRoute.name !== 'Admin') {
               this.$router.push({ name: 'Admin' })
               this.$message({message: 'Xin chào ', type: 'success'});

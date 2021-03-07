@@ -35,9 +35,9 @@
       </div>
     </div>
     <el-dialog v-if="dialogFormVisible" id="detailTodo" class="dialogTodo" :append-to-body="true" width="40%" :show-close="false"
-               :visible.sync="dialogFormVisible">
+               :visible.sync="dialogFormVisible" @close="closeModal">
       <div class="window-wrapper js-tab-parent" data-elevation="1"><a
-          class="icon-md icon-close close-button js-close-window" @click="dialogFormVisible=false"><i class="iconColse el-icon-close"></i></a>
+          class="icon-md icon-close close-button js-close-window" @click="closeModal"><i class="iconColse el-icon-close"></i></a>
         <div class="card-detail-window u-clearfix">
           <div class="window-header"><span
               class="window-header-icon"><i class="iconBank el-icon-bank-card"></i></span>
@@ -143,11 +143,11 @@
                 <CheckList :checkList="cardDetail.check_lists"/>
               </div>
             </div>
-            <DialogSibar @showControlLabel="handleShowControlLabel"/>
+            <DialogSibar @showControl="handleShowControl"/>
           </div>
         </div>
       </div>
-      <Label v-if="showControlLabel" :labels="labels" @closeLabelModal="closeLabelModal" :offset="offsetLabel"/>
+      <ModalSidebar v-if="showControlModalSidebar" :labels="labels" @closeLabelModal="closeControlModal" :offset="offsetLabel"/>
     </el-dialog>
   </div>
 </template>
@@ -157,15 +157,15 @@ import {mapMutations, mapState} from "vuex";
 import CheckList from "@/components/include/CheckList";
 import DialogSibar from "@/components/include/DialogSibar";
 import api from "@/api";
-import Label from "@/components/include/Label";
-
+import ModalSidebar from "@/components/include/ModalSidebar";
+import _ from 'lodash'
 export default {
   name: "Todo",
   props: ['card'],
   components:{
     CheckList,
     DialogSibar,
-    Label
+    ModalSidebar,
   },
   data() {
     return {
@@ -173,7 +173,7 @@ export default {
       dialogFormVisible: false,
       editDescriptionModal: false,
       cardDetail:{},
-      showControlLabel:false,
+      showControlModalSidebar:false,
       offsetLabel:{},
       labels:[]
     }
@@ -192,24 +192,38 @@ export default {
         this.cardDetail = response.data.data;
       })
     },
-    handleShowControlLabel(data){
+    handleShowControl(data){
+      this.showControlModalSidebar = false;
+      if (data.type === 'label'){
+        this.getDatalabel()
+      }
+
+      if (_.isEmpty(this.offsetLabel)){
+        this.showControlModalSidebar = true;
+      }
+
+      if (!_.isEmpty(this.offsetLabel) && this.offsetLabel.type !== data.type()){
+        this.showControlModalSidebar = true;
+      }
+
       this.offsetLabel = data
-      this.showControlLabel = !this.showControlLabel;
-      this.getDatalabel();
     },
     getDatalabel(){
       api.getLabels().then((response) => {
         this.labels = response.data.data;
       })
     },
-    closeLabelModal(){
-      this.showControlLabel = false;
+    closeControlModal(){
+      this.showControlModalSidebar = false;
     },
     openDetailCard(){
       this.dialogFormVisible = true;
       this.getDetailCard();
+    },
+    closeModal(){
+      this.dialogFormVisible = false;
+      this.closeControlModal()
     }
-
   },
   computed: {
     ...mapState('home', [

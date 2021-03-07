@@ -3,11 +3,11 @@
     <div class="window-module u-clearfix">
       <h3 class="mod-no-top-margin js-sidebar-add-heading">Thêm vào thẻ</h3>
       <div class="u-clearfix">
-        <a class="button-link js-edit-labels" ref="label" @click="showControlLabel()" title="Nhãn">
+        <a class="button-link js-edit-labels" ref="label" @click="showControl($event,'label')" title="Nhãn">
           <span class="icon-sm icon-label"><i class="el-icon-price-tag"></i></span>
           <span class="js-sidebar-action-text">Nhãn</span>
         </a>
-        <a class="button-link js-add-checklist-menu" title="Việc cần làm">
+        <a class="button-link js-add-checklist-menu" @click="showControl($event,'checkList')" title="Việc cần làm">
           <span class="icon-sm icon-checklist"><i class="el-icon-folder-checked"></i></span>
           <span class="js-sidebar-action-text">Việc cần làm</span>
         </a>
@@ -46,13 +46,14 @@ export default {
     }
   },
   methods:{
-    showControlLabel(){
-      const rect = this.$refs.label.getBoundingClientRect();
+    showControl(e,type){
+      let rect = e.target.getBoundingClientRect();
       let data = {
-        left: rect.left + window.scrollX - 571,
-        top: rect.top + window.scrollY - 46
+        left: rect.left - 571,
+        top: rect.top - 46,
+        type: type
       };
-      this.$emit('showControlLabel',data)
+      this.$emit('showControl',data)
     },
   }
 }

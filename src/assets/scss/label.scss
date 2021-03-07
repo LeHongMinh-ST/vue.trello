@@ -14,7 +14,7 @@
       margin-bottom: 8px;
       text-align: center;
 
-      .pop-over-header-back-btn{
+      .pop-over-header-back-btn {
         color: #6b778c;
         padding: 10px 12px 10px 8px;
         position: absolute;
@@ -81,7 +81,7 @@
 
         div {
           div {
-            div.edit-label{
+            div.edit-label {
               input {
                 margin: 4px 0 12px;
                 width: 100%;
@@ -101,6 +101,50 @@
 
               input:focus {
                 border-color: #0079BF !important;
+              }
+
+              .u-clearfix {
+                clear: both;
+                content: "";
+                display: table;
+
+                .label-item {
+                  float: left;
+                  height: 32px;
+                  margin: 0 8px 8px 0;
+                  padding: 0;
+                  width: 48px;
+                }
+
+                input{
+                  background-color: #49852e;
+                  box-shadow: none;
+                  border: none;
+                  color: #fff;
+                  outline: 0;
+                  padding-left: 24px;
+                  padding-right: 24px;
+                }
+              }
+
+              .edit-labels-no-color-section {
+                display: flex;
+
+                .edit-labels-no-color-section-color {
+
+                }
+
+                .edit-labels-no-color-section-text {
+
+                  .u-bottom {
+                    margin: 0;
+                  }
+
+                  .quiet {
+                    color: #5e6c84;
+                  }
+                }
+
               }
             }
 
@@ -149,37 +193,7 @@
                     background-color: #ECEDF0;
                   }
 
-                  .card-label {
-                    border-radius: 3px;
-                    cursor: pointer;
-                    font-weight: 700;
-                    margin: 0 0 4px;
-                    min-height: 20px;
-                    padding: 6px 12px;
-                    position: relative;
-                    transition: padding 85ms, margin 85ms, box-shadow 85ms;
-                    width: 100%;
-                    color: #fff;
-                    display: block;
-                    max-width: 90%;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
 
-                    span {
-                      height: 20px;
-                      font-size: 16px;
-                      line-height: 20px;
-                      width: 20px;
-                      -webkit-font-smoothing: antialiased;
-                      display: inline-block;
-                      font-family: trellicons;
-                      font-style: normal;
-                      font-weight: 400;
-                      text-align: center;
-                      vertical-align: bottom;
-                    }
-                  }
                 }
               }
 

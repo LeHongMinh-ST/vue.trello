@@ -109,5 +109,12 @@ export default {
             method: 'get',
             url: '/labels'
         })
+    },
+    addLabel(data,id){
+        return apiAxios({
+            method: 'post',
+            url: '/cards'+id+'/label',
+            data: data
+        })
     }
 }
