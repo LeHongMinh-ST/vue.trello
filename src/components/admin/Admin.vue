@@ -15,8 +15,10 @@
                 :list="list"
                 item-key="id"
                 :animation="100"
+                :move="moveList"
             >
-              <List v-for="(item,index) in list" :key="index" :index="index" :item="item"/>
+              <List v-for="item in list" :id="item.id" :key="item.index" @updateCardList="getDataList" @updateListTitle="handleUpdateList"
+                    :index="item.index" :item="item"/>
             </draggable>
 
             <div class="newList" v-if="!addList">
@@ -25,7 +27,8 @@
                 <span>Thêm danh sách khác</span>
               </div>
             </div>
-            <NewList v-if="addList" v-click-outside="closeNewList" @closeNewList="closeNewList"></NewList>
+            <NewList v-if="addList" v-click-outside="closeNewList" @addList="handleAddList"
+                     @closeNewList="closeNewList"></NewList>
           </div>
         </div>
       </div>
@@ -39,13 +42,15 @@ import List from "@/components/admin/List";
 import NewList from "@/components/include/NewList";
 import ClickOutside from 'vue-click-outside'
 import draggable from "vuedraggable";
-import {mapState} from 'vuex'
+import {mapMutations, mapState} from 'vuex'
+import api from '../../api';
 
 export default {
   name: "Admin",
   data() {
     return {
       'addList': false,
+      'data': []
     }
   },
   components: {
@@ -54,12 +59,51 @@ export default {
     draggable,
     NewList
   },
-  methods:{
-    newList(){
+  methods: {
+    ...mapMutations('home', [
+      'updateList'
+    ]),
+    moveList(e) {
+      console.log(e)
+
+      let id = e.draggedContext.element.id
+
+      let payload = {
+        index : e.draggedContext.futureIndex+1,
+      }
+      if (id !== e.draggedContext.futureIndex){
+        api.changeIndexList(payload,id).then(()=>{
+          this.getDataList()
+        })
+      }
+
+    },
+    newList() {
       this.addList = true
     },
-    closeNewList(){
+    closeNewList() {
       this.addList = false
+    },
+    getDataList() {
+      api.getList().then((response) => {
+        this.updateList(response.data.data)
+      })
+    },
+    loadData() {
+      this.data = this.list
+    },
+    handleAddList(data) {
+      api.addList(data).then((response) => {
+        console.log(response)
+        this.getDataList();
+      })
+    },
+    handleUpdateList(data) {
+      console.log(data)
+      api.updateTitleList(data.data, data.id).then((response) => {
+        console.log(response)
+        this.getDataList();
+      })
     }
   },
   computed: {
@@ -67,8 +111,14 @@ export default {
       'list'
     ])
   },
-  mounted () {
+  mounted() {
     this.popupItem = this.$el
+    this.getDataList()
+    this.loadData()
+  },
+  updated() {
+    // this.getDataList()
+    this.loadData()
   },
 
   // do not forget this section
@@ -140,7 +190,7 @@ export default {
       -webkit-transform: translateZ(0);
       height: 98%;
 
-      .newList{
+      .newList {
         text-align: left;
         width: 272px;
         margin: 0 4px;
@@ -151,8 +201,10 @@ export default {
         display: inline-block;
         vertical-align: top;
         white-space: nowrap;
+
         .title {
           padding: 0 11px;
+
           textarea {
             background-color: #ebecf0;
             border: none;
@@ -162,12 +214,14 @@ export default {
             padding: 4px 0 4px 8px;
             resize: none;
           }
+
           textarea[type="text"] {
             font-size: 20px;
             line-height: 24px;
             font-weight: 600;
             //transition: width 0.4 s ease-in-out;
           }
+
           textarea:focus {
             outline: none;
             background-color: white;
@@ -178,11 +232,12 @@ export default {
             /// / width: 96 %;
           }
         }
-        .btn-add{
+
+        .btn-add {
           width: 100%;
           height: 50px;
           line-height: 40px;
-          background-color: hsla(0,0%,100%,.24);
+          background-color: hsla(0, 0%, 100%, .24);
           cursor: pointer;
           border-radius: 3px;
           color: #172b4d;
@@ -190,13 +245,14 @@ export default {
           transition: color 85ms ease-in;
           box-sizing: border-box;
           white-space: nowrap;
-          .plus{
+
+          .plus {
             margin-right: 10px;
           }
         }
 
-        .btn-add:hover{
-          background-color: hsla(0,0%,100%,.5);
+        .btn-add:hover {
+          background-color: hsla(0, 0%, 100%, .5);
         }
       }
     }

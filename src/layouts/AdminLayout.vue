@@ -31,20 +31,18 @@ export default {
   name: "AdminLayout",
   methods:{
     ...mapMutations('auth', ['updateLoginStatus','updateAuthUser']),
-    async handleLogout() {
+    handleLogout() {
       console.log('a')
       localStorage.removeItem('access_token')
       localStorage.removeItem('vuex')
-      this.updateLoginStatus({
-        isAuthenticated: false,
-      })
+      this.updateLoginStatus(false)
 
       this.updateAuthUser({
         authUser: {},
       })
 
       if (this.$router.currentRoute.name !== 'Login') {
-        await this.$router.push({ name: 'Login' })
+        this.$router.push({ name: 'Login' })
       }
     }
   }

@@ -24,7 +24,7 @@ import {mapState, mapMutations, mapGetters} from "vuex";
 
 export default {
   name: "NewCard.vue",
-  props:['list'],
+  props:['directory'],
   methods: {
     ...mapMutations('home', [
       'addCard'
@@ -34,28 +34,16 @@ export default {
     },
     AddCard(){
       let title= this.$refs.cardTitle.value
-      let d= new Date()
 
       if (title.length > 0){
-        let index = this.getList(this.list.id).cards.length +1
-        let card = {
-          id: d.getTime(),
+        let index = this.getList(this.directory.id).cards.length +1
+        let data = {
           title: title,
-          description: "",
-          status: 1,
-          directory_id: 1,
+          directory_id: this.directory.id,
           index: index,
-          deadline: null,
-          user_id: 1,
-          created_at: null,
-          updated_at: null,
-          labels: []
         }
-        let data={
-          list_id: this.list.id,
-          card: card
-        }
-        this.addCard(data)
+
+        this.$emit('addCard',data)
         this.closeAddCard()
       }
 

@@ -67,11 +67,12 @@ export default {
         }
         if (valid) {
           api.login(data).then((response) => {
-            this.$message({message: 'Xin chào ', type: 'success'});
+            console.log(response)
             localStorage.setItem('access_token', response.data.access_token)
-            this.updateLoginStatus({isAuthenticated: true})
+            this.updateLoginStatus(true)
             if (this.$router.currentRoute.name !== 'Admin') {
               this.$router.push({ name: 'Admin' })
+              this.$message({message: 'Xin chào ', type: 'success'});
             }
           }).catch(() => {
             this.$message({message: 'Có 1 lỗi gì đó', type: 'error'});

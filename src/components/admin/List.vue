@@ -3,7 +3,7 @@
     <div class="listContent">
       <div class="listHeader">
         <textarea class="list-header-name list-header-edit-name"
-                  @keydown.enter="$event.target.blur()" name="" id=""
+                  @keydown.enter="updateListTitle" name="" id=""
                   cols="30" rows="10" :value="listTitle" placeholder="Nhập vào tiêu đề danh sách..."
         ></textarea>
         <div class="menu"><i class="el-icon-more"></i></div>
@@ -15,10 +15,11 @@
             item-key="id"
             :animation="100"
             group="todo"
+            :move="moveTodo"
         >
-          <Todo v-for="card in item.cards" :key="card.id" :card="card"/>
+          <Todo v-for="card in item.cards" :key="card.index" :id="card.id" :card="card"/>
         </draggable>
-        <NewCard v-if="cardAddOpen" v-click-outside="closeAddCard" @closeAddCard="closeAddCard" :list="item"></NewCard>
+        <NewCard v-if="cardAddOpen" v-click-outside="closeAddCard" @addCard="handleAddCard" @closeAddCard="closeAddCard" :directory="item"></NewCard>
       </div>
       <div class="listFooter" v-if="!cardAddOpen">
         <div class="openCard" @click="openAddCard">
@@ -35,6 +36,7 @@ import Todo from "@/components/admin/Todo";
 import draggable from 'vuedraggable'
 import ClickOutside from 'vue-click-outside'
 import NewCard from "@/components/include/NewCard";
+import api from "@/api";
 
 export default {
   name: "List",
@@ -51,6 +53,24 @@ export default {
     NewCard
   },
   methods: {
+    moveTodo(e){
+      console.log(e)
+      let id = e.draggedContext.element.id
+      let todo = e.to.parentElement
+      let directory = todo.parentElement;
+
+      let payload = {
+        index : e.draggedContext.futureIndex + 1,
+        directory_id : directory.parentElement.getAttribute('id')
+      }
+
+      if (id !== e.draggedContext.futureIndex){
+        api.changeCardList(payload,id).then(() => {
+          this.$emit('updateCardList');
+        })
+      }
+
+    },
     loadTitle() {
       this.listTitle = this.item.title;
     },
@@ -61,6 +81,25 @@ export default {
 
     closeAddCard() {
       this.cardAddOpen = false;
+    },
+    updateListTitle(e){
+      e.target.blur();
+      let updateTile = {
+        data:{
+          title: e.target.value
+        },
+        id: this.item.id
+      }
+      this.$emit('updateListTitle',updateTile);
+    },
+    handleAddCard(data){
+      api.addCards(data).then((response) => {
+        console.log(response)
+        this.updateCardList();
+      })
+    },
+    updateCardList(){
+      this.$emit('updateCardList');
     }
   },
   mounted() {

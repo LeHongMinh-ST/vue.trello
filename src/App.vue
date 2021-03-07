@@ -16,13 +16,9 @@ export default {
     async handleLogout() {
       localStorage.removeItem('access_token')
       localStorage.removeItem('vuex')
-      this.updateLoginStatus({
-        isAuthenticated: false,
-      })
+      this.updateLoginStatus(false)
 
-      this.updateAuthUser({
-        authUser: {},
-      })
+      this.updateAuthUser({})
 
       if (this.$router.currentRoute.name !== 'Login') {
         await this.$router.push({ name: 'Login' })
@@ -31,14 +27,7 @@ export default {
   },
   mounted() {
     api.getAuthUser().then((response) => {
-      this.updateLoginStatus({
-        isAuthenticated: true,
-      })
-
-      this.updateAuthUser({
-        authUser:  response.data,
-      })
-    }).catch(() => {
+      this.updateAuthUser(response.data)
     })
   }
 }
@@ -143,5 +132,19 @@ h2, h3, h4, h5, h6 {
   transition-property: background-color,border-color,box-shadow;
   transition-duration: 85ms;
   transition-timing-function: ease;
+}
+
+.button-link:hover{
+  background-color: #eaecf0 !important;
+}
+
+label, legend {
+  font-weight: 700;
+  color: #5e6c84;
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 12px;
+  margin-bottom: 4px;
+  display: block;
 }
 </style>

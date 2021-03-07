@@ -6,7 +6,7 @@ const baseUrl = process.env.VUE_APP_BASE_URL;
 const token = localStorage.getItem('access_token');
 // Tạo instance của axios
 export const apiAxios = axios.create({
-    baseURL:`${baseUrl}/api`,
+    baseURL: `${baseUrl}/api`,
     headers: {
         post: {
             'Content-Type': 'application/json'
@@ -30,24 +30,84 @@ apiAxios.interceptors.response.use(undefined, (error) => {
 })
 // Khai báo các request sử dụng trong hệ thống
 export default {
-    getAuthUser () {
+    getAuthUser() {
         return apiAxios({
             method: 'get',
             url: '/auth/me'
         })
     },
-    register (data) {
+    register(data) {
         return apiAxios({
             method: 'post',
             url: 'auth/register',
             data: data
         })
     },
-    login (data) {
+    login(data) {
         return apiAxios({
             method: 'post',
             url: 'auth/login',
             data: data
         })
     },
+
+    //list
+    getList() {
+        return apiAxios({
+            method: 'get',
+            url: '/directories'
+        })
+    },
+    addList(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/directories',
+            data: data
+        })
+    },
+    updateTitleList(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: '/directories/' + id,
+            data: data
+        })
+    },
+    changeIndexList(data,id){
+        return apiAxios({
+            method: 'put',
+            url: 'directories/' + id + '/index',
+            data:data
+        })
+    },
+
+
+    //cards
+    addCards(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/cards',
+            data: data
+        })
+    },
+    getCard(id) {
+        return apiAxios({
+            method: 'get',
+            url: '/cards/' + id,
+        })
+    },
+    changeCardList(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: 'cards/' + id + '/directory',
+            data:data
+        })
+    },
+
+    //label
+    getLabels() {
+        return apiAxios({
+            method: 'get',
+            url: '/labels'
+        })
+    }
 }

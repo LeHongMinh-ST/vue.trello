@@ -1,6 +1,6 @@
 <template>
   <div class="cardTodo">
-    <div class="detailTodo" @click="dialogFormVisible = true">
+    <div class="detailTodo" @click="openDetailCard">
       <span class="btn-edit">
         <i class="el-icon-edit"></i>
       </span>
@@ -18,7 +18,7 @@
             <span class="badge-icon icon-sm icon-subscribe"><i class="el-icon-view"></i> </span>
           </div>
           <div class="badge js-due-date-badge mod-due-date is-due-complete" title="This card is complete."
-               v-if="card.deadline!=null">
+               v-if="cardDetail.deadline!=null">
             <span class="badge-icon icon-sm icon-clock badge-due-icon"> <i
                 class="el-icon-alarm-clock badge-due-icon"></i></span>
             <span class="badge-icon icon-sm icon-checkbox-checked badge-due-checked"><i
@@ -34,7 +34,7 @@
         <span class="js-plugin-badges"><span></span></span>
       </div>
     </div>
-    <el-dialog id="detailTodo" class="dialogTodo" :append-to-body="true" width="40%" :show-close="false"
+    <el-dialog v-if="dialogFormVisible" id="detailTodo" class="dialogTodo" :append-to-body="true" width="40%" :show-close="false"
                :visible.sync="dialogFormVisible">
       <div class="window-wrapper js-tab-parent" data-elevation="1"><a
           class="icon-md icon-close close-button js-close-window" @click="dialogFormVisible=false"><i class="iconColse el-icon-close"></i></a>
@@ -42,14 +42,14 @@
           <div class="window-header"><span
               class="window-header-icon"><i class="iconBank el-icon-bank-card"></i></span>
             <div class="window-title">
-              <textarea class="" dir="auto" :value="card.title"></textarea>
+              <textarea class="" dir="auto" :value="cardDetail.title"></textarea>
             </div>
           </div>
           <div class="window-content">
             <div class="window-main-col">
               <div class="card-detail-data u-gutter">
-                <div class="card-detail-item card-detail-item-labels u-clearfix js-card-detail-labels"><h3
-                    class="card-detail-item-header">Nhãn</h3>
+                <div v-if="cardDetail.labels.length>0" class="card-detail-item card-detail-item-labels u-clearfix js-card-detail-labels">
+                  <h3 class="card-detail-item-header">Nhãn</h3>
                   <div class="u-clearfix js-card-detail-labels-list js-edit-label">
                   <span class="card-label card-label-green mod-card-detail mod-clickable" title="abc">
                     <span class="label-text">abc</span>
@@ -65,18 +65,7 @@
                     </a>
                   </div>
                 </div>
-                <div class="card-detail-item card-detail-start-date">
-                  <h3 class="card-detail-item-header">Ngày bắt đầu</h3>
-                  <div class="card-detail-start-date-badge js-card-detail-start-date-badge is-clickable">
-                    <div class="card-detail-badge-start-date-react-container">
-                      <el-date-picker
-                          type="datetime"
-                          placeholder="Select date and time">
-                      </el-date-picker>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-detail-item card-detail-due-date">
+                <div v-if="cardDetail.deadline!=null" class="card-detail-item card-detail-due-date">
                   <h3 class="card-detail-item-header">Ngày hết hạn</h3>
                   <div class="card-detail-due-date-badge js-card-detail-due-date-badge is-due-past is-clickable"
                        title="Thẻ đã hết hạn."><a
@@ -106,7 +95,7 @@
                       <h3 class="u-inline-block">Mô tả</h3>
                       <div class="editable" attr="desc"><a
                           class="nch-button ml-4 hide-on-edit js-show-with-desc js-edit-desc js-edit-desc-button hide"
-                          @click="openEditDescription" v-if="!editDescriptionModal && card.description.length > 0">Chỉnh
+                          @click="openEditDescription" v-if="!editDescriptionModal && cardDetail.description !=null">Chỉnh
                         sửa</a><span
                           class="editing-members-description js-editing-members-description hide"></span></div>
                     </div>
@@ -114,23 +103,23 @@
                       <div class="editable" attr="desc">
                         <div class="description-content js-desc-content">
                           <div class="current markeddown hide-on-edit js-desc js-show-with-desc hide" dir="auto"></div>
-                          <p v-if="!editDescriptionModal && card.description.length == 0" @click="openEditDescription"
+                          <p v-if="!editDescriptionModal && cardDetail.description==null" @click="openEditDescription"
                              class="u-bottom js-hide-with-desc">
                             <a
                                 class="description-fake-text-area hide-on-edit js-edit-desc  js-hide-with-draft"
                                 href="#">Thêm
                               mô tả chi tiết hơn...</a></p>
-                          <p v-if="!editDescriptionModal && card.description.length > 0" @click="openEditDescription"
+                          <p v-if="!editDescriptionModal && cardDetail.description!=null" @click="openEditDescription"
                              class="u-bottom js-hide-with-desc">
                             <a
                                 class="description-fake-text-area hide-on-edit js-edit-desc  js-hide-with-draft"
                                 href="#">{{
-                                card.description
+                                cardDetail.description
                               }}</a>
                           </p>
                           <div class="description-edit edit" v-if="editDescriptionModal">
                             <textarea-autosize
-                                :value="card.description"
+                                :value="cardDetail.description"
                                 class="description-draft"
                                 placeholder="Thêm mô tả chi tiết hơn..."
                                 ref="descriptionCard"
@@ -150,14 +139,15 @@
                   </div>
                 </div>
               </div>
-              <div class="checklist-list window-module js-checklist-list js-no-higher-edits ui-sortable">
-                <CheckList :checkList="card.check_lists"/>
+              <div v-if="cardDetail.check_lists.length > 0" class="checklist-list window-module js-checklist-list js-no-higher-edits ui-sortable">
+                <CheckList :checkList="cardDetail.check_lists"/>
               </div>
             </div>
-            <DialogSibar/>
+            <DialogSibar @showControlLabel="handleShowControlLabel"/>
           </div>
         </div>
       </div>
+      <Label v-if="showControlLabel" :labels="labels" @closeLabelModal="closeLabelModal" :offset="offsetLabel"/>
     </el-dialog>
   </div>
 </template>
@@ -166,18 +156,26 @@
 import {mapMutations, mapState} from "vuex";
 import CheckList from "@/components/include/CheckList";
 import DialogSibar from "@/components/include/DialogSibar";
+import api from "@/api";
+import Label from "@/components/include/Label";
+
 export default {
   name: "Todo",
   props: ['card'],
   components:{
     CheckList,
-    DialogSibar
+    DialogSibar,
+    Label
   },
   data() {
     return {
       modalShow: false,
       dialogFormVisible: false,
-      editDescriptionModal: false
+      editDescriptionModal: false,
+      cardDetail:{},
+      showControlLabel:false,
+      offsetLabel:{},
+      labels:[]
     }
   },
   methods: {
@@ -187,12 +185,39 @@ export default {
     openEditDescription() {
       this.editDescriptionModal = true;
       // this.$refs['descriptionCard'].focus();
+    },
+    getDetailCard(){
+      api.getCard(this.card.id).then((response) => {
+        console.log(response)
+        this.cardDetail = response.data.data;
+      })
+    },
+    handleShowControlLabel(data){
+      this.offsetLabel = data
+      this.showControlLabel = !this.showControlLabel;
+      this.getDatalabel();
+    },
+    getDatalabel(){
+      api.getLabels().then((response) => {
+        this.labels = response.data.data;
+      })
+    },
+    closeLabelModal(){
+      this.showControlLabel = false;
+    },
+    openDetailCard(){
+      this.dialogFormVisible = true;
+      this.getDetailCard();
     }
+
   },
   computed: {
     ...mapState('home', [
       'labelShow'
     ])
+  },
+  mounted() {
+
   }
 }
 </script>

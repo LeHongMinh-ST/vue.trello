@@ -30,22 +30,16 @@ export default {
     },
     AddList(){
       if (this.$refs.title.value.length>0){
-        let newList = {
-          "id": new Date().getTime(),
+        let data = {
           "title": this.$refs.title.value,
-          "user_id": 1,
           "index": this.list.length +1,
-          "created_at": null,
-          "updated_at": null,
-          "cards": []
         }
-        // console.log(newList)
-        this.addList(newList)
+        this.$emit('addList',data)
         this.closeNewList()
       }
     },
     ...mapMutations('home',[
-      'addList'
+      'updateList'
     ])
   },
   computed:{

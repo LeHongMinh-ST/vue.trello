@@ -9,10 +9,10 @@ export default {
     },
     mutations: {
         updateLoginStatus (state, isAuthenticated) {
-            state.isAuthenticated = isAuthenticated
+            state.isAuthenticated = isAuthenticated;
         },
         updateAuthUser (state, authUser) {
-            state.authUser = authUser
+            state.authUser = authUser;
         }
     },
 }
