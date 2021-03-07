@@ -17,7 +17,7 @@
             group="todo"
             :move="moveTodo"
         >
-          <Todo v-for="(card,index) in item.cards" :key="index" :id="card.id" :card="card"/>
+          <Todo v-for="(card,index) in item.cards" :key="index" @handleShowControl="handleShowControl" :id="card.id" :card="card"/>
         </draggable>
         <NewCard v-if="cardAddOpen" v-click-outside="closeAddCard" @addCard="handleAddCard" @closeAddCard="closeAddCard" :directory="item"></NewCard>
       </div>
@@ -100,6 +100,9 @@ export default {
     },
     updateCardList(){
       this.$emit('updateCardList');
+    },
+    handleShowControl(data){
+      this.$emit('handleShowControl',data)
     }
   },
   mounted() {

@@ -17,7 +17,7 @@
                 :animation="100"
                 :move="moveList"
             >
-              <List v-for="(item,index) in list" :id="item.id" :key="index" @updateCardList="getDataList" @updateListTitle="handleUpdateList"
+              <List v-for="(item,index) in list" :id="item.id" @handleShowControl="handleShowControl" :key="index" @updateCardList="getDataList" @updateListTitle="handleUpdateList"
                     :index="item.index" :item="item"/>
             </draggable>
 
@@ -32,6 +32,7 @@
           </div>
         </div>
       </div>
+      <ModalSidebar v-if="showControlModalSidebar" :labels="labels" @closeLabelModal="closeControlModal" :offset="offsetLabel"/>
     </template>
   </AdminLayout>
 </template>
@@ -44,6 +45,7 @@ import ClickOutside from 'vue-click-outside'
 import draggable from "vuedraggable";
 import {mapMutations, mapState} from 'vuex'
 import api from '../../api';
+import _ from "lodash";
 
 export default {
   name: "Admin",
@@ -104,6 +106,23 @@ export default {
         console.log(response)
         this.getDataList();
       })
+    },
+    handleShowControl(data){
+      // this.showControlModalSidebar = false;
+
+      if (data.type === 'label'){
+        this.getDatalabel()
+      }
+      if (_.isEmpty(this.offsetLabel)){
+        this.showControlModalSidebar = true;
+      }
+      if (!_.isEmpty(this.offsetLabel) && this.offsetLabel.type !== data.type){
+        this.showControlModalSidebar = true;
+      }else if (!_.isEmpty(this.offsetLabel) && this.offsetLabel.type === data.type) {
+        this.showControlModalSidebar = !this.showControlModalSidebar
+      }
+
+      this.offsetLabel = data
     }
   },
   computed: {

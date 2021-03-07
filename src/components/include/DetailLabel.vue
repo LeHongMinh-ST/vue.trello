@@ -1,5 +1,5 @@
 <template>
-  <span class="card-label" @click="showIcon = !showIcon" :class="['card-label-'+color]">
+  <span class="card-label" @click="activeLabel(color)"  :class="['card-label-'+color]">
     <span class="icon-sm icon-check card-label-selectable-icon" v-if="showIcon">
       <i class="el-icon-check"></i>
     </span>
@@ -13,6 +13,12 @@ export default {
   data(){
     return{
       showIcon:false
+    }
+  },
+  methods:{
+    activeLabel(color){
+      this.showIcon = !this.showIcon
+      this.$emit('eventActive',color);
     }
   }
 }

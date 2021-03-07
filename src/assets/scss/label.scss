@@ -103,6 +103,19 @@
                 border-color: #0079BF !important;
               }
 
+              .add-checklist:focus{
+                border-color: #0079BF !important;
+              }
+
+              .add-checklist {
+                background-color: #49852e;
+                box-shadow: none;
+                border: none;
+                color: #fff;
+                outline: 0;
+                width: 30%;
+              }
+
               .u-clearfix {
                 clear: both;
                 content: "";
@@ -116,7 +129,7 @@
                   width: 48px;
                 }
 
-                input{
+                input {
                   background-color: #49852e;
                   box-shadow: none;
                   border: none;

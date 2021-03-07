@@ -50,7 +50,7 @@ export default {
       let rect = e.target.getBoundingClientRect();
       let data = {
         left: rect.left - 571,
-        top: rect.top - 46,
+        top: rect.top - 110,
         type: type
       };
       this.$emit('showControl',data)

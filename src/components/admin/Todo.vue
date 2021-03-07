@@ -147,7 +147,7 @@
           </div>
         </div>
       </div>
-      <ModalSidebar v-if="showControlModalSidebar" :labels="labels" @closeLabelModal="closeControlModal" :offset="offsetLabel"/>
+
     </el-dialog>
   </div>
 </template>
@@ -157,15 +157,12 @@ import {mapMutations, mapState} from "vuex";
 import CheckList from "@/components/include/CheckList";
 import DialogSibar from "@/components/include/DialogSibar";
 import api from "@/api";
-import ModalSidebar from "@/components/include/ModalSidebar";
-import _ from 'lodash'
 export default {
   name: "Todo",
   props: ['card'],
   components:{
     CheckList,
     DialogSibar,
-    ModalSidebar,
   },
   data() {
     return {
@@ -193,20 +190,9 @@ export default {
       })
     },
     handleShowControl(data){
-      this.showControlModalSidebar = false;
-      if (data.type === 'label'){
-        this.getDatalabel()
-      }
+      // this.showControlModalSidebar = false;
 
-      if (_.isEmpty(this.offsetLabel)){
-        this.showControlModalSidebar = true;
-      }
-
-      if (!_.isEmpty(this.offsetLabel) && this.offsetLabel.type !== data.type()){
-        this.showControlModalSidebar = true;
-      }
-
-      this.offsetLabel = data
+      this.$emit('handleShowControl',data)
     },
     getDatalabel(){
       api.getLabels().then((response) => {
