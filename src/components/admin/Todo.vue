@@ -1,6 +1,6 @@
 <template>
   <div class="cardTodo">
-    <div class="detailTodo" @click="openDetailCard">
+    <div class="detailTodo" @click.left="openDetailCard" @click.right="openQuickEdit">
       <span class="btn-edit">
         <i class="el-icon-edit"></i>
       </span>
@@ -34,10 +34,12 @@
         <span class="js-plugin-badges"><span></span></span>
       </div>
     </div>
-    <el-dialog v-if="dialogFormVisible" id="detailTodo" class="dialogTodo" :append-to-body="true" width="40%" :show-close="false"
+    <el-dialog v-if="dialogFormVisible" id="detailTodo" class="dialogTodo" :append-to-body="true" width="40%"
+               :show-close="false"
                :visible.sync="dialogFormVisible" @close="closeModal">
       <div class="window-wrapper js-tab-parent" data-elevation="1"><a
-          class="icon-md icon-close close-button js-close-window" @click="closeModal"><i class="iconColse el-icon-close"></i></a>
+          class="icon-md icon-close close-button js-close-window" @click="closeModal"><i
+          class="iconColse el-icon-close"></i></a>
         <div class="card-detail-window u-clearfix">
           <div class="window-header"><span
               class="window-header-icon"><i class="iconBank el-icon-bank-card"></i></span>
@@ -48,19 +50,15 @@
           <div class="window-content">
             <div class="window-main-col">
               <div class="card-detail-data u-gutter">
-                <div v-if="cardDetail.labels.length>0" class="card-detail-item card-detail-item-labels u-clearfix js-card-detail-labels">
+                <div v-if="cardDetail.labels.length>0"
+                     class="card-detail-item card-detail-item-labels u-clearfix js-card-detail-labels">
                   <h3 class="card-detail-item-header">Nhãn</h3>
                   <div class="u-clearfix js-card-detail-labels-list js-edit-label">
-                  <span class="card-label card-label-green mod-card-detail mod-clickable" title="abc">
-                    <span class="label-text">abc</span>
+                  <span v-for="(item,index) in cardDetail.labels" :key="index" @click="openControlLabel"
+                        :class="['card-label-'+item.color]" class="card-label" :title="item.name">
+                    <span class="label-text">{{ item.name }}</span>
                   </span>
-                    <span class="card-label card-label-yellow mod-card-detail mod-clickable" title="LMS Thầy thiện">
-                    <span class="label-text">LMS Thầy thiện</span>
-                  </span>
-                    <span class="card-label card-label-orange mod-card-detail mod-clickable" title="LMS Zent">
-                    <span class="label-text">LMS Zent</span>
-                  </span>
-                    <a class="card-detail-item-add-button js-details-edit-labels">
+                    <a class="card-detail-item-add-button" @click="openControlLabel">
                       <span class="icon-sm icon-add"><i class="el-icon-plus"></i></span>
                     </a>
                   </div>
@@ -139,11 +137,12 @@
                   </div>
                 </div>
               </div>
-              <div v-if="cardDetail.check_lists.length > 0" class="checklist-list window-module js-checklist-list js-no-higher-edits ui-sortable">
+              <div v-if="cardDetail.check_lists.length > 0"
+                   class="checklist-list window-module js-checklist-list js-no-higher-edits ui-sortable">
                 <CheckList :checkList="cardDetail.check_lists"/>
               </div>
             </div>
-            <DialogSibar @showControl="handleShowControl"/>
+            <DialogSibar @showControl="handleShowControl" :card="cardDetail"/>
           </div>
         </div>
       </div>
@@ -157,10 +156,11 @@ import {mapMutations, mapState} from "vuex";
 import CheckList from "@/components/include/CheckList";
 import DialogSibar from "@/components/include/DialogSibar";
 import api from "@/api";
+
 export default {
   name: "Todo",
   props: ['card'],
-  components:{
+  components: {
     CheckList,
     DialogSibar,
   },
@@ -169,10 +169,10 @@ export default {
       modalShow: false,
       dialogFormVisible: false,
       editDescriptionModal: false,
-      cardDetail:{},
-      showControlModalSidebar:false,
-      offsetLabel:{},
-      labels:[]
+      cardDetail: {},
+      showControlModalSidebar: false,
+      offsetLabel: {},
+      labels: []
     }
   },
   methods: {
@@ -183,32 +183,46 @@ export default {
       this.editDescriptionModal = true;
       // this.$refs['descriptionCard'].focus();
     },
-    getDetailCard(){
+    getDetailCard() {
       api.getCard(this.card.id).then((response) => {
-        console.log(response)
         this.cardDetail = response.data.data;
       })
     },
-    handleShowControl(data){
+    handleShowControl(data) {
       // this.showControlModalSidebar = false;
 
-      this.$emit('handleShowControl',data)
+      this.$emit('handleShowControl', data)
     },
-    getDatalabel(){
-      api.getLabels().then((response) => {
-        this.labels = response.data.data;
-      })
+    openControlLabel(e) {
+      let rect = e.target.getBoundingClientRect();
+      let data = {
+        left: rect.left,
+        top: rect.top,
+        type: 'label',
+        id: this.card.id
+      };
+      this.$emit('handleShowControl', data)
     },
-    closeControlModal(){
-      this.showControlModalSidebar = false;
-    },
-    openDetailCard(){
+    openDetailCard() {
       this.dialogFormVisible = true;
       this.getDetailCard();
     },
-    closeModal(){
+    closeModal() {
       this.dialogFormVisible = false;
       this.closeControlModal()
+    },
+    closeControlModal() {
+      this.$emit('closeControlModal')
+    },
+    openQuickEdit(e) {
+      let rect = e.target.getBoundingClientRect();
+      let data = {
+        left: rect.left,
+        top: rect.top,
+        width: e.currentTarget.offsetWidth,
+        id: this.card.id
+      }
+      this.$emit('openQuickEdit', data)
     }
   },
   computed: {
@@ -218,6 +232,11 @@ export default {
   },
   mounted() {
 
+  },
+  watch: {
+    card: function () {
+      this.getDetailCard()
+    }
   }
 }
 </script>

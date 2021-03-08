@@ -4,7 +4,7 @@
       <div class="adminMainContent">
         <div class="main-header">
           <div class="logo">
-            <h1>Lê Hồng Minh</h1>
+            <h1>{{ authUser.name }}</h1>
             <!--              <img src="" alt="">-->
           </div>
         </div>
@@ -17,7 +17,9 @@
                 :animation="100"
                 :move="moveList"
             >
-              <List v-for="(item,index) in list" :id="item.id" @handleShowControl="handleShowControl" :key="index" @updateCardList="getDataList" @updateListTitle="handleUpdateList"
+              <List v-for="(item,index) in list" :id="item.id" @openQuickEdit="openQuickEdit"
+                    @closeControlModal="closeControlModal" @handleShowControl="handleShowControl" :key="index"
+                    @updateCardList="getDataList" @updateListTitle="handleUpdateList"
                     :index="item.index" :item="item"/>
             </draggable>
 
@@ -32,7 +34,10 @@
           </div>
         </div>
       </div>
-      <ModalSidebar v-if="showControlModalSidebar" :labels="labels" @closeLabelModal="closeControlModal" :offset="offsetLabel"/>
+      <ModalSidebar v-if="showControlModalSidebar" :card="card" :labels="labels" @closeLabelModal="closeControlModal"
+                    :offset="offsetLabel" @reloadLabel="reloadLabel"/>
+      <QuickEdit v-if="showQuickEdit" @showControl="handleShowControl" @closeQuickEdit="closeQuickEdit" :card="card"
+                 :offset="offsetQuickEdit"/>
     </template>
   </AdminLayout>
 </template>
@@ -46,20 +51,29 @@ import draggable from "vuedraggable";
 import {mapMutations, mapState} from 'vuex'
 import api from '../../api';
 import _ from "lodash";
+import ModalSidebar from "@/components/include/ModalSidebar";
+import QuickEdit from "@/components/include/QuickEdit";
 
 export default {
   name: "Admin",
   data() {
     return {
-      'addList': false,
-      'data': []
+      addList: false,
+      data: [],
+      showControlModalSidebar: false,
+      showQuickEdit: false,
+      labels: [],
+      card: [],
+      offsetQuickEdit: {}
     }
   },
   components: {
     AdminLayout,
     List,
     draggable,
-    NewList
+    NewList,
+    ModalSidebar,
+    QuickEdit
   },
   methods: {
     ...mapMutations('home', [
@@ -71,10 +85,10 @@ export default {
       let id = e.draggedContext.element.id
 
       let payload = {
-        index : e.draggedContext.futureIndex,
+        index: e.draggedContext.futureIndex,
       }
-      if (id !== e.draggedContext.futureIndex){
-        api.changeIndexList(payload,id).then(()=>{
+      if (id !== e.draggedContext.futureIndex) {
+        api.changeIndexList(payload, id).then(() => {
           this.getDataList()
         })
       }
@@ -89,6 +103,8 @@ export default {
     getDataList() {
       api.getList().then((response) => {
         this.updateList(response.data.data)
+      }).catch(() => {
+
       })
     },
     loadData() {
@@ -107,27 +123,60 @@ export default {
         this.getDataList();
       })
     },
-    handleShowControl(data){
+    handleShowControl(data) {
       // this.showControlModalSidebar = false;
 
-      if (data.type === 'label'){
+      if (data.type === 'label') {
         this.getDatalabel()
       }
-      if (_.isEmpty(this.offsetLabel)){
+      if (_.isEmpty(this.offsetLabel)) {
         this.showControlModalSidebar = true;
       }
-      if (!_.isEmpty(this.offsetLabel) && this.offsetLabel.type !== data.type){
+      if (!_.isEmpty(this.offsetLabel) && this.offsetLabel.type !== data.type) {
         this.showControlModalSidebar = true;
-      }else if (!_.isEmpty(this.offsetLabel) && this.offsetLabel.type === data.type) {
+      } else if (!_.isEmpty(this.offsetLabel) && this.offsetLabel.type === data.type) {
         this.showControlModalSidebar = !this.showControlModalSidebar
       }
 
+      this.getDetailCard(data.id)
+
       this.offsetLabel = data
+    },
+    getDatalabel() {
+      console.log('a')
+      api.getLabels().then((response) => {
+        this.labels = response.data.data;
+      })
+    },
+    closeControlModal() {
+      this.showControlModalSidebar = false
+    },
+    openQuickEdit(data) {
+      this.offsetQuickEdit = data
+      this.getDetailCard(data.id)
+      this.showQuickEdit = true;
+    },
+    closeQuickEdit() {
+      this.showQuickEdit = false;
+    },
+
+    getDetailCard(id) {
+      api.getCard(id).then((response) => {
+        this.card = response.data.data;
+      })
+    },
+    reloadLabel(data){
+      this.getDataList()
+      this.loadData()
+      this.getDetailCard(data)
     }
   },
   computed: {
     ...mapState('home', [
       'list'
+    ]),
+    ...mapState('auth', [
+      'authUser'
     ])
   },
   mounted() {

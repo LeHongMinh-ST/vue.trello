@@ -17,9 +17,12 @@
             group="todo"
             :move="moveTodo"
         >
-          <Todo v-for="(card,index) in item.cards" :key="index" @handleShowControl="handleShowControl" :id="card.id" :card="card"/>
+          <Todo v-for="(card,index) in item.cards" @openQuickEdit="openQuickEdit" :key="index"
+                @closeControlModal="closeControlModal"
+                @handleShowControl="handleShowControl" :id="card.id" :card="card"/>
         </draggable>
-        <NewCard v-if="cardAddOpen" v-click-outside="closeAddCard" @addCard="handleAddCard" @closeAddCard="closeAddCard" :directory="item"></NewCard>
+        <NewCard v-if="cardAddOpen" v-click-outside="closeAddCard" @addCard="handleAddCard" @closeAddCard="closeAddCard"
+                 :directory="item"></NewCard>
       </div>
       <div class="listFooter" v-if="!cardAddOpen">
         <div class="openCard" @click="openAddCard">
@@ -53,19 +56,19 @@ export default {
     NewCard
   },
   methods: {
-    moveTodo(e){
+    moveTodo(e) {
       console.log(e)
       let id = e.draggedContext.element.id
       let todo = e.to.parentElement
       let directory = todo.parentElement;
 
       let payload = {
-        index : e.draggedContext.futureIndex,
-        directory_id : directory.parentElement.getAttribute('id')
+        index: e.draggedContext.futureIndex,
+        directory_id: directory.parentElement.getAttribute('id')
       }
 
-      if (id !== e.draggedContext.futureIndex){
-        api.changeCardList(payload,id).then(() => {
+      if (id !== e.draggedContext.futureIndex) {
+        api.changeCardList(payload, id).then(() => {
           this.$emit('updateCardList');
         })
       }
@@ -82,27 +85,33 @@ export default {
     closeAddCard() {
       this.cardAddOpen = false;
     },
-    updateListTitle(e){
+    updateListTitle(e) {
       e.target.blur();
       let updateTile = {
-        data:{
+        data: {
           title: e.target.value
         },
         id: this.item.id
       }
-      this.$emit('updateListTitle',updateTile);
+      this.$emit('updateListTitle', updateTile);
     },
-    handleAddCard(data){
+    handleAddCard(data) {
       api.addCards(data).then((response) => {
         console.log(response)
         this.updateCardList();
       })
     },
-    updateCardList(){
+    updateCardList() {
       this.$emit('updateCardList');
     },
-    handleShowControl(data){
-      this.$emit('handleShowControl',data)
+    handleShowControl(data) {
+      this.$emit('handleShowControl', data)
+    },
+    closeControlModal() {
+      this.$emit('closeControlModal')
+    },
+    openQuickEdit(data){
+      this.$emit('openQuickEdit',data)
     }
   },
   mounted() {

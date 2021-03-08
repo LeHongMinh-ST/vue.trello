@@ -113,7 +113,21 @@ export default {
     addLabel(data,id){
         return apiAxios({
             method: 'post',
-            url: '/cards'+id+'/label',
+            url: '/cards/'+id+'/label',
+            data: data
+        })
+    },
+    detachLabels(data,id){
+        return apiAxios({
+            method: 'delete',
+            url: '/cards/'+id+'/detach-labels',
+            data: data
+        })
+    },
+    attachLabels(data,id){
+        return apiAxios({
+            method: 'post',
+            url: '/cards/'+id+'/attach-labels',
             data: data
         })
     }

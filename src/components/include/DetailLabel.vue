@@ -1,5 +1,5 @@
 <template>
-  <span class="card-label" @click="activeLabel(color)"  :class="['card-label-'+color]">
+  <span class="card-label" @click="activeLabel(color)" :class="['card-label-'+color]">{{ title }}
     <span class="icon-sm icon-check card-label-selectable-icon" v-if="showIcon">
       <i class="el-icon-check"></i>
     </span>
@@ -9,16 +9,41 @@
 <script>
 export default {
   name: "DetailLabel",
-  props:['color'],
-  data(){
-    return{
-      showIcon:false
+  props: ['color', 'title', 'card', 'id'],
+  data() {
+    return {
+      showIcon: false
     }
   },
-  methods:{
-    activeLabel(color){
+  methods: {
+    activeLabel(color) {
+      let data = {
+        label_id: this.id,
+        color: color,
+        isActive: this.showIcon
+      }
+      this.$emit('activeLabel', data);
       this.showIcon = !this.showIcon
-      this.$emit('eventActive',color);
+    },
+    checkActive() {
+      this.card.labels.map((label) => {
+        if (label.id === this.id) {
+          this.showIcon = true
+        }
+      })
+    },
+
+  },
+  mounted() {
+    this.checkActive()
+  },
+  watch: {
+    card: function (val) {
+      val.labels.map((label) => {
+        if (label.id === this.id) {
+          this.showIcon = true
+        }
+      })
     }
   }
 }
@@ -26,6 +51,7 @@ export default {
 
 <style scoped lang="scss">
 @import "src/assets/scss/card_color";
+
 .card-label {
   border-radius: 3px;
   cursor: pointer;
@@ -61,7 +87,7 @@ export default {
   }
 }
 
-.card-label:hover{
+.card-label:hover {
   opacity: 0.9;
 }
 </style>

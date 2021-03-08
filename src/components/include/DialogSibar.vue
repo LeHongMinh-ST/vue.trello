@@ -41,6 +41,7 @@
 
 export default {
   name: "DialogSibar",
+  props:['card'],
   data(){
     return{
     }
@@ -49,9 +50,10 @@ export default {
     showControl(e,type){
       let rect = e.target.getBoundingClientRect();
       let data = {
-        left: rect.left - 571,
-        top: rect.top - 110,
-        type: type
+        left: rect.left,
+        top: rect.top,
+        type: type,
+        id: this.card.id
       };
       this.$emit('showControl',data)
     },

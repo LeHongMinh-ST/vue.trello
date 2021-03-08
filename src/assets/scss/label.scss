@@ -1,11 +1,11 @@
 .pop-over {
+  z-index: 9999;
   background: #fff;
   border-radius: 3px;
   box-shadow: 0 8px 16px -4px rgb(9 30 66 / 25%), 0 0 0 1px rgb(9 30 66 / 8%);
   overflow: hidden;
   position: absolute;
   width: 304px;
-  z-index: 70;
 
   .no-back {
     .pop-over-header {
@@ -231,6 +231,30 @@
             }
           }
         }
+      }
+
+      /* width */
+      .pop-over-content::-webkit-scrollbar {
+        height: 8px;
+        //width: 98%;
+        width: 8px;
+      }
+
+      /* Track */
+      .pop-over-content::-webkit-scrollbar-track {
+        border-radius: 7px;
+        background-color: #4f4f5073;
+      }
+
+      /* Handle */
+      .pop-over-content::-webkit-scrollbar-thumb {
+        background: #bcbcbe63;
+        border-radius: 7px;
+      }
+
+      /* Handle on hover */
+      .pop-over-content::-webkit-scrollbar-thumb:hover {
+        background: #d3d3d87d;
       }
     }
   }
