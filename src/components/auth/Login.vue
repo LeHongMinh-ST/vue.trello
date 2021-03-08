@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     ...mapActions,
-    ...mapMutations('auth', ['updateLoginStatus', 'updateAuthUser']),
+    ...mapMutations('auth', ['updateLoginStatus', 'updateAuthUser', 'updateToken']),
     register() {
       this.$router.push('/register')
     },
@@ -67,12 +67,12 @@ export default {
         }
         if (valid) {
           api.login(data).then((response) => {
-            console.log(response)
             localStorage.setItem('access_token', response.data.access_token)
+            this.updateToken(response.data.access_token)
             this.updateLoginStatus(true)
 
             if (this.$router.currentRoute.name !== 'Admin') {
-              this.$router.push({ name: 'Admin' })
+              this.$router.push('/admin')
               this.$message({message: 'Xin chào ', type: 'success'});
             }
           }).catch(() => {

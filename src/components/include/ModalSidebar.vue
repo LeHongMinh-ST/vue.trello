@@ -46,7 +46,7 @@
                 <ul class="edit-labels-pop-over js-labels-list">
                   <li v-for="(label,index) in labels" :key="index"><a class="card-label-edit-button"><i
                       class="el-icon-edit"></i></a>
-                    <DetailLabel :color="label.color" @activeLabel="changeLable" :id="label.id" :card="card"
+                    <DetailLabel :color="label.color" @activeLabel="changeLabel" :id="label.id" :card="card"
                                  :title="label.name"/>
                   </li>
                 </ul>
@@ -81,6 +81,7 @@
 <script>
 import DetailLabel from "@/components/include/DetailLabel";
 import api from '../../api';
+import {mapMutations, mapState} from "vuex";
 
 export default {
   name: "ModalSidebar",
@@ -89,6 +90,9 @@ export default {
     DetailLabel
   },
   methods: {
+    ...mapMutations('home', [
+      'showLable','updateCardDetail'
+    ]),
     closeLabelModal() {
       this.$emit('closeLabelModal')
     },
@@ -107,13 +111,19 @@ export default {
           }
           api.addLabel(data, id).then((res) => {
             console.log(res)
+            this.resetLabel()
           })
         })
-
-        this.$emit('reloadLabel',this.card.id)
+        this.getDetailCard()
+        this.$emit('reloadLabel', this.card.id)
         this.showAddLabel = !this.showAddLabel;
       }
     },
+    resetLabel(){
+      this.titleLabel ='';
+      this.arrayActive = [];
+    }
+    ,
     activeLabel(data) {
       if (this.arrayActive.includes(data.color)) {
         this.arrayActive = this.arrayActive.filter((item) => item != data.color)
@@ -121,16 +131,25 @@ export default {
         this.arrayActive.push(data.color);
       }
     },
-    changeLable(data) {
-      if (data.isActive){
+    changeLabel(data) {
+      if (data.isActive) {
         data.directory_id = this.card.directory_id
-        api.detachLabels(data,this.card.id)
-      }else {
-        api.attachLabels(data,this.card.id)
+        api.detachLabels(data, this.card.id)
+      } else {
+        api.attachLabels(data, this.card.id)
       }
-
-      this.$emit('reloadLabel',this.card.id)
+      this.getDetailCard()
+      this.$emit('reloadLabel', this.card.id)
+    },
+    getDetailCard() {
+      api.getCard(this.card.id).then((response) => {
+        this.updateCardDetail(response.data.data);
+      })
     }
+  }, computed: {
+    ...mapState('home', [
+      'labelShow', 'cardDetail'
+    ])
   },
   watch: {},
   data() {

@@ -9,7 +9,8 @@ export default {
     state: {
         labelShow: false,
         // Khai báo state
-        list: []
+        list: [],
+        cardDetail:{}
     },
     getters: {
         getList: (state) => (id) => {
@@ -25,6 +26,9 @@ export default {
         },
         updateList(state, list) {
             state.list = list;
+        },
+        updateCardDetail(state,card){
+            state.cardDetail = card
         }
     },
 }

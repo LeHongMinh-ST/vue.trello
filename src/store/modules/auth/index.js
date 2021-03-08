@@ -9,6 +9,7 @@ export default {
     state: {
         isAuthenticated: false,
         authUser: {},
+        token: localStorage.getItem('access_token') || ''
     },
     getters: {
         //
@@ -23,6 +24,9 @@ export default {
         },
         updateAuthUser (state, authUser) {
             state.authUser = authUser;
+        },
+        updateToken(state, token) {
+          state.token = token
         }
     },
 }

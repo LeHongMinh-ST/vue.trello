@@ -1,11 +1,11 @@
 <template>
   <div class="cardTodo">
     <div class="detailTodo" @click.left="openDetailCard" @click.right="openQuickEdit">
-      <span class="btn-edit">
+      <span class="btn-edit" @click="btnOpenEdit" >
         <i class="el-icon-edit"></i>
       </span>
       <div class="list-card-labels">
-        <span class="card-label card-label-default mod-card-front" @click="showLable"
+        <span class="card-label card-label-default mod-card-front" @click="handleShowLable"
               :class="[{'labelShow' :labelShow}, 'card-label-'+label.color]" v-for="label in card.labels"
               :key="label.id" title="LMS Thầy thiện">
           <span class="label-text" v-if="labelShow">{{ label.name }}</span>
@@ -14,17 +14,18 @@
       <p class="text-title">{{ card.title }}</p>
       <div class="badges">
         <span class="js-badges">
-          <div class="badge is-icon-only" title="You are watching this card.">
-            <span class="badge-icon icon-sm icon-subscribe"><i class="el-icon-view"></i> </span>
-          </div>
-          <div class="badge js-due-date-badge mod-due-date is-due-complete" title="This card is complete."
-               v-if="cardDetail.deadline!=null">
+          <div class="badge js-due-date-badge mod-due-date"
+               :class="[{'is-due-complete':isComplete},{'is-due-die': isDeadline===2},{'is-due-near': isDeadline===1}]"
+               title="This card is complete."
+               v-if="card.deadline!=null">
             <span class="badge-icon icon-sm icon-clock badge-due-icon"> <i
                 class="el-icon-alarm-clock badge-due-icon"></i></span>
-            <span class="badge-icon icon-sm icon-checkbox-checked badge-due-checked"><i
-                class="el-icon-check"></i></span>
+            <span class="badge-icon icon-sm icon-checkbox-checked badge-due-checked">
+              <el-checkbox v-model="isComplete"
+                           @change="changeStatusTodo"></el-checkbox>
+            </span>
             <span class="badge-icon icon-sm icon-checkbox-unchecked badge-due-unchecked"></span>
-            <span class="badge-text js-due-date-text">Sep 17, 2020</span>
+            <span class="badge-text js-due-date-text">{{ formatStringDate(card.deadline) }}</span>
           </div>
           <div class="badge is-icon-only" title="This card has a description.">
             <span class="badge-icon icon-sm icon-description"> <i class="el-icon-s-unfold"></i></span>
@@ -44,7 +45,7 @@
           <div class="window-header"><span
               class="window-header-icon"><i class="iconBank el-icon-bank-card"></i></span>
             <div class="window-title">
-              <textarea class="" dir="auto" :value="cardDetail.title"></textarea>
+              <textarea @keydown.enter="updateCardTitle" :value="cardTitle"></textarea>
             </div>
           </div>
           <div class="window-content">
@@ -65,16 +66,34 @@
                 </div>
                 <div v-if="cardDetail.deadline!=null" class="card-detail-item card-detail-due-date">
                   <h3 class="card-detail-item-header">Ngày hết hạn</h3>
-                  <div class="card-detail-due-date-badge js-card-detail-due-date-badge is-due-past is-clickable"
-                       title="Thẻ đã hết hạn."><a
-                      class="card-detail-badge-due-date-complete-box js-card-detail-due-date-badge-complete js-details-toggle-due-date-complete"
-                      href="#" role="button"><span class="card-detail-badge-due-date-complete-icon"></span></a>
+                  <div class="card-detail-due-date-badge js-card-detail-due-date-badge is-clickable is-due-complete"
+                       title="Thẻ này đã hoàn tất.">
+                    <el-checkbox v-model="isComplete" @change="changeStatusTodo"></el-checkbox>
                     <div class="card-detail-badge-due-date-react-container">
-                      <el-date-picker
-                          type="datetime"
-                          placeholder="Select date and time">
-                      </el-date-picker>
-                      <span class="deadline-badge">quá hạn</span>
+                      <div class="card-deadline-badge">
+                        <button class="deadline-badge datetime-btn"
+                                data-test-id="due-date-badge-with-date-range-picker" type="button">
+                          <span>{{ formatDate(deadline) }}</span>
+                          <span class="card-deadline-status card-complate" v-if="isComplete">Hoàn tất</span>
+                          <span class="card-deadline-status card-die"
+                                v-if="!isComplete && isDeadline===2">Quá hạn</span>
+                          <span class="card-deadline-status card-near-die"
+                                v-if="!isComplete && isDeadline===1">Gần đến hạn</span>
+                          <span class="nch-icon">
+                            <span class="" role="img" aria-label="DownIcon"><svg width="24" height="24"
+                                                                                 role="presentation"
+                                                                                 focusable="false"
+                                                                                 viewBox="0 0 24 24"><path
+                                d="M11.293 16.707l-7.071-7.07a1 1 0 111.414-1.415L12 14.586l6.364-6.364a1 1 0 111.414 1.414l-7.07 7.071a1 1 0 01-1.415 0z"
+                                fill="currentColor"></path></svg></span></span>
+                          <el-date-picker
+                              type="datetime"
+                              v-model="deadline"
+                              @change="changeDeadline"
+                          >
+                          </el-date-picker>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -142,7 +161,7 @@
                 <CheckList :checkList="cardDetail.check_lists"/>
               </div>
             </div>
-            <DialogSibar @showControl="handleShowControl" :card="cardDetail"/>
+            <DialogSibar @showControl="handleShowControl" @changeDeadline="changeDeadline" :card="cardDetail"/>
           </div>
         </div>
       </div>
@@ -156,6 +175,7 @@ import {mapMutations, mapState} from "vuex";
 import CheckList from "@/components/include/CheckList";
 import DialogSibar from "@/components/include/DialogSibar";
 import api from "@/api";
+import moment from "moment";
 
 export default {
   name: "Todo",
@@ -169,23 +189,78 @@ export default {
       modalShow: false,
       dialogFormVisible: false,
       editDescriptionModal: false,
-      cardDetail: {},
       showControlModalSidebar: false,
       offsetLabel: {},
-      labels: []
+      labels: [],
+      isComplete: false,
+      isDeadline: 0,
+      cardTitle: '',
+      deadline: '',
+      description: ''
     }
   },
   methods: {
     ...mapMutations('home', [
-      'showLable'
+      'showLable','updateCardDetail'
     ]),
+    handleShowLable(e) {
+      e.stopPropagation()
+      this.showLable()
+    },
+    updateCardTitle() {
+      let data = {
+        title: this.cardTitle,
+        description: this.description
+      }
+      api.updateCard(data, this.card.id).then(() => {
+        this.$emit('updateData')
+      })
+    },
+    loadDescription() {
+      this.description = this.cardDetail.description;
+    }
+    ,
+    loadTitle() {
+      this.cardTitle = this.cardDetail.title;
+    },
+    loadDeadline() {
+      this.deadline = this.cardDetail.deadline
+    },
+    changeStatusTodo() {
+      let data = {};
+
+      if (this.isComplete) {
+        data.status = 1;
+      } else {
+        data.status = 0
+      }
+
+      data.directory_id = this.card.directory_id
+      api.changeStatusTodo(data, this.card.id).then(() => {
+        this.getDetailCard();
+        this.$emit('updateData')
+      })
+    },
+    changeDeadline(data) {
+      api.changeStatusDeadline(data, this.card.id).then(() => {
+        this.getDetailCard();
+        this.$emit('updateData')
+      })
+
+      this.resetTime()
+    },
+    resetTime(){
+      this.isDeadline = 0;
+      this.isComplete = false;
+      this.deadline = ''
+    },
     openEditDescription() {
       this.editDescriptionModal = true;
       // this.$refs['descriptionCard'].focus();
     },
     getDetailCard() {
       api.getCard(this.card.id).then((response) => {
-        this.cardDetail = response.data.data;
+        this.updateCardDetail(response.data.data);
       })
     },
     handleShowControl(data) {
@@ -214,28 +289,75 @@ export default {
     closeControlModal() {
       this.$emit('closeControlModal')
     },
+    btnOpenEdit(e){
+      e.stopPropagation()
+      let parent = e.target.parentElement.parentElement
+      let rect = parent.getBoundingClientRect();
+      let data = {
+        left: rect.left,
+        top: rect.top,
+        width: '256px',
+        id: this.card.id
+      }
+      this.$emit('openQuickEdit', data)
+    },
     openQuickEdit(e) {
       let rect = e.target.getBoundingClientRect();
       let data = {
         left: rect.left,
         top: rect.top,
-        width: e.currentTarget.offsetWidth,
+        width: '256px',
         id: this.card.id
       }
       this.$emit('openQuickEdit', data)
+    },
+    formatStringDate(dateString) {
+      let date = moment(dateString)
+      return date.date() + ' tháng ' + (date.month() + + 1);
+    }, formatDate(dateString) {
+      return 'ngày ' + moment(dateString).format('DD-MM-yyyy  HH:mm:ss');
+    },
+    checkComplate() {
+      if (this.card.status == 0) {
+        this.isComplete = false
+      } else {
+        this.isComplete = true
+      }
+    },
+    checkDeadline() {
+      let deadline = moment(this.card.deadline);
+      let now = moment();
+      if (deadline < now) {
+        this.isDeadline = 2;
+      } else if (deadline.format('YYYY-MM-dd') === now.format('YYYY-MM-dd')) {
+        this.isDeadline = 1;
+      } else {
+        this.isDeadline = 0;
+      }
     }
   },
   computed: {
     ...mapState('home', [
-      'labelShow'
+      'labelShow','cardDetail'
     ])
   },
   mounted() {
-
+    this.loadTitle();
+    this.loadDescription()
+    this.checkComplate()
+    this.loadDeadline()
+    this.checkDeadline()
+  },
+  updated() {
+    this.loadTitle();
+    this.loadDescription()
+    this.checkComplate()
+    this.loadDeadline()
+    this.checkDeadline()
   },
   watch: {
-    card: function () {
-      this.getDetailCard()
+    card : function () {
+      this.checkComplate()
     }
   }
 }
@@ -332,6 +454,7 @@ export default {
       margin-top: 10px;
 
       .badge {
+        border-radius: 5px;
         color: #5e6c84;
         display: inline-block;
         margin: 0 4px 4px 0;
@@ -343,20 +466,81 @@ export default {
         text-decoration: none;
         text-overflow: ellipsis;
         vertical-align: top;
+        cursor: pointer;
 
         .badge-icon {
           color: #6b778c;
           vertical-align: top;
+          margin: 0 2px;
+
+          .el-checkbox {
+            margin: 0;
+
+            .is-checked {
+              .el-checkbox__inner {
+                background-color: #61BD4F !important;
+              }
+            }
+          }
+        }
+
+        .icon-checkbox-checked {
+          display: none;
+        }
+
+        .icon-clock {
+          display: inline-block;
+        }
+
+        .badge-text {
+          font-size: 12px;
+          padding: 0 4px 0 2px;
+          vertical-align: top;
+          white-space: nowrap;
+        }
+      }
+
+      .badge:hover {
+        background-color: #ebecf0;
+
+        .icon-checkbox-checked {
+          display: inline-block;
+        }
+
+        .icon-clock {
+          display: none;
         }
       }
 
       .badge.is-due-complete {
-        background-color: #61bd4f;
+        background-color: #61bd4f!important;
         border-radius: 3px;
         color: #fff;
 
         .badge-icon {
-          color: #6b778c;
+          color: #fff;
+          vertical-align: top;
+        }
+      }
+
+      .badge.is-due-near {
+        background-color: #f2d600;
+        border-radius: 3px;
+        color: #fff;
+
+        .badge-icon {
+          color: #fff;
+          vertical-align: top;
+        }
+      }
+
+      .badge.is-due-die {
+        background-color: #eb5a46;
+        border-radius: 3px;
+        color: #fff;
+
+        .badge-icon {
+          color: #fff;
           vertical-align: top;
         }
       }

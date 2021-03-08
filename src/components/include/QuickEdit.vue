@@ -9,7 +9,7 @@
         <div class="list-card-stickers-area js-stickers-area hide">
           <div class="stickers js-card-stickers"></div>
         </div>
-        <div class="list-card-details js-card-details">
+        <div class="list-card-details js-card-details" @blur="showLable">
           <div class="list-card-labels">
             <span class="card-label card-label-default mod-card-front" @click="showLable"
                   :class="[{'labelShow' :labelShow}, 'card-label-'+label.color]" v-for="label in card.labels"
@@ -59,6 +59,12 @@
             class="quick-card-editor-buttons-item js-edit-labels" @click="showControl($event,'label')" href="#"><span
             class="icon-sm icon-label light"><i class="el-icon-price-tag"></i></span><span
             class="quick-card-editor-buttons-item-text" >Chỉnh sửa nhãn</span>
+        </a>
+        <a
+
+            class="quick-card-editor-buttons-item js-edit-labels"><span
+            class="icon-sm icon-label light"><i class="el-icon-time"></i></span><span
+            class="quick-card-editor-buttons-item-text" >Chỉnh sửa thời gian</span>
         </a>
         <div id="convert-card-role-button-react-root" class="">
           <div class="js-react-root"></div>

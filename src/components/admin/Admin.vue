@@ -103,21 +103,18 @@ export default {
     getDataList() {
       api.getList().then((response) => {
         this.updateList(response.data.data)
-      }).catch(() => {
-
       })
     },
     loadData() {
       this.data = this.list
     },
     handleAddList(data) {
-      api.addList(data).then((response) => {
-        console.log(response)
+      api.addList(data).then(() => {
+        // console.log(response)
         this.getDataList();
       })
     },
     handleUpdateList(data) {
-      console.log(data)
       api.updateTitleList(data.data, data.id).then((response) => {
         console.log(response)
         this.getDataList();
@@ -143,7 +140,6 @@ export default {
       this.offsetLabel = data
     },
     getDatalabel() {
-      console.log('a')
       api.getLabels().then((response) => {
         this.labels = response.data.data;
       })
@@ -166,6 +162,7 @@ export default {
       })
     },
     reloadLabel(data){
+      this.getDatalabel()
       this.getDataList()
       this.loadData()
       this.getDetailCard(data)
@@ -183,8 +180,10 @@ export default {
     this.popupItem = this.$el
     this.getDataList()
     this.loadData()
+    this.getDatalabel()
   },
   updated() {
+    this.getDatalabel()
     this.getDataList()
     this.loadData()
   },

@@ -11,7 +11,7 @@
                   src="https://i.pinimg.com/originals/eb/59/fc/eb59fc8a76791bc31663723c03c875d2.jpg"></el-avatar>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item><router-link to="/profile">Thông tin</router-link></el-dropdown-item>
-                <el-dropdown-item @click="handleLogout">Đăng xuất</el-dropdown-item>
+                <el-dropdown-item ><a href="" @click="handleLogout">Đăng xuất</a></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -26,24 +26,26 @@
 
 <script>
 import {mapMutations} from "vuex";
-
+import api from '../api'
 export default {
   name: "AdminLayout",
   methods:{
-    ...mapMutations('auth', ['updateLoginStatus','updateAuthUser']),
+    ...mapMutations('auth', ['updateLoginStatus','updateAuthUser','updateToken']),
     handleLogout() {
       console.log('a')
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('vuex')
-      this.updateLoginStatus(false)
+      api.logout().then(()=>{
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('vuex')
+        this.updateLoginStatus(false)
+        this.updateToken(null)
+        this.updateAuthUser({
+          authUser: {},
+        })
 
-      this.updateAuthUser({
-        authUser: {},
+        if (this.$router.currentRoute.name !== 'Login') {
+          this.$router.push('/login')
+        }
       })
-
-      if (this.$router.currentRoute.name !== 'Login') {
-        this.$router.push({ name: 'Login' })
-      }
     }
   }
 }

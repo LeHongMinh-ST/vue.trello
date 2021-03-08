@@ -16,7 +16,10 @@
           <span class="icon-sm"> <i class="el-icon-alarm-clock"></i></span>
           <span class="js-sidebar-action-text">Thời gian hết hạn</span>
           <el-date-picker
-              type="datetime">
+              type="datetime"
+              v-model="deadLine"
+              @change="changeDeadline"
+          >
           </el-date-picker>
         </a>
         <a class="button-link js-attach" href="#" title="Đính kèm">
@@ -38,16 +41,24 @@
 </template>
 
 <script>
+import moment from 'moment'
 
 export default {
   name: "DialogSibar",
-  props:['card'],
-  data(){
-    return{
+  props: ['card'],
+  data() {
+    return {
+      deadLine: '',
     }
   },
-  methods:{
-    showControl(e,type){
+  methods: {
+    changeDeadline() {
+      let data = {
+        deadline : this.formatDate(this.deadLine)
+      }
+      this.$emit('changeDeadline', data)
+    },
+    showControl(e, type) {
       let rect = e.target.getBoundingClientRect();
       let data = {
         left: rect.left,
@@ -55,8 +66,12 @@ export default {
         type: type,
         id: this.card.id
       };
-      this.$emit('showControl',data)
+      this.$emit('showControl', data)
     },
+    formatDate(dateString) {
+      // Format từ dạng "02/24/2021 18:12:23" thành định dạng kiểu: "24/02/2021"
+      return moment(dateString).format('YYYY-MM-DD HH:mm:ss')
+    }
   }
 }
 </script>

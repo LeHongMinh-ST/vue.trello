@@ -3,18 +3,25 @@ import store from "../store";
 import router from "../router";
 // Lấy ra các biến cần thiết: base url, token
 const baseUrl = process.env.VUE_APP_BASE_URL;
-const token = localStorage.getItem('access_token');
+
 // Tạo instance của axios
+
 export const apiAxios = axios.create({
     baseURL: `${baseUrl}/api`,
     headers: {
         post: {
             'Content-Type': 'application/json'
         },
-        common: {
-            'Authorization': `Bearer ${token}`
-        }
     }
+})
+apiAxios.interceptors.request.use(config => {
+    let token = store.state.auth.token
+    if (token) {
+        config.headers.common['Authorization'] = `Bearer ${token}`
+    }
+    return config
+}, error => {
+    return Promise.reject(error)
 })
 // Xử lý logout khi response 401
 apiAxios.interceptors.response.use(undefined, (error) => {
@@ -49,6 +56,12 @@ export default {
             url: 'auth/login',
             data: data
         })
+    },
+    logout(){
+      return apiAxios({
+          method:'post',
+          urd:'/auth/logout',
+      })
     },
 
     //list
@@ -101,6 +114,27 @@ export default {
             url: 'cards/' + id + '/directory',
             data:data
         })
+    },
+    changeStatusDeadline(data,id){
+        return apiAxios({
+            method: 'put',
+            url: 'cards/' + id + '/change-status-deadline',
+            data:data
+        })
+    },
+    changeStatusTodo(data,id){
+        return apiAxios({
+            method: 'put',
+            url: '/cards/' + id + '/change-status',
+            data:data
+        })
+    },
+    updateCard(data,id){
+      return apiAxios({
+          method:'put',
+          url: '/cards/'+id,
+          data:data
+      })
     },
 
     //label

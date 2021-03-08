@@ -19,7 +19,9 @@
         >
           <Todo v-for="(card,index) in item.cards" @openQuickEdit="openQuickEdit" :key="index"
                 @closeControlModal="closeControlModal"
-                @handleShowControl="handleShowControl" :id="card.id" :card="card"/>
+                @handleShowControl="handleShowControl"
+                @updateData="updateCardList"
+                :id="card.id" :card="card"/>
         </draggable>
         <NewCard v-if="cardAddOpen" v-click-outside="closeAddCard" @addCard="handleAddCard" @closeAddCard="closeAddCard"
                  :directory="item"></NewCard>
@@ -112,7 +114,7 @@ export default {
     },
     openQuickEdit(data){
       this.$emit('openQuickEdit',data)
-    }
+    },
   },
   mounted() {
     this.loadTitle();
