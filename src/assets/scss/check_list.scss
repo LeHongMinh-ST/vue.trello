@@ -1,4 +1,9 @@
 .checklist {
+  display: block;
+  float: left;
+  padding-bottom: 9px;
+  z-index: 50;
+  width: 100%;
   .window-module-title {
     display: flex;
     align-items: center;
@@ -60,16 +65,30 @@
         width: 100%;
 
         textarea {
-          background: rgba(9, 30, 66, .04);
-          border-color: rgba(9, 30, 66, .13);
-          box-shadow: inset 0 0 0 1px rgb(9 30 66 / 13%);
-          margin-bottom: 4px;
-          display: block;
-          font-size: 16px;
-          line-height: 19px;
-          font-weight: 700;
+          background-color: #fff;
+          box-shadow: inset 0 0 0 2px #0079bf;
+          color: #172b4d;
+          cursor: text;
           width: 100%;
+          resize: vertical;
+          float: none;
+          display: block;
+          padding-bottom: 9px;
+          z-index: 50;
+          text-align: initial;
+          text-decoration: none;
+          min-height: 32px;
+          margin: 4px 0 0;
+          position: relative;
           outline: none;
+          border: none;
+          box-sizing: border-box;
+          padding: 8px 12px;
+          transition-property: background-color, border-color, box-shadow;
+          transition-duration: 85ms;
+          transition-timing-function: ease;
+          line-height: 20px;
+          margin-bottom: 10px;
         }
 
         .checklist-title-edit-controls{
@@ -111,9 +130,12 @@
   }
 
   .editable{
-    margin-left: 40px;
     .new-checklist-item-button{
       margin-top: 8px;
     }
+  }
+
+  .checklist-new-item{
+    margin-left: 40px;
   }
 }

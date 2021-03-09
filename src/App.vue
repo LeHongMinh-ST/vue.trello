@@ -21,7 +21,7 @@ export default {
       this.updateAuthUser({})
 
       if (this.$router.currentRoute.name !== 'Login') {
-        await this.$router.push({ name: 'Login' })
+        await this.$router.push('/Login' )
       }
     }
   },
@@ -106,7 +106,7 @@ h2, h3, h4, h5, h6 {
 
 .el-progress__text{
   float: left;
-  margin-right: 10px;
+  margin-right: 5px;
   margin-left: 5px;
 }
 

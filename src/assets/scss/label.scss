@@ -82,6 +82,10 @@
         div {
           div {
             div.edit-label {
+              label {
+                text-align: left;
+              }
+
               input {
                 margin: 4px 0 12px;
                 width: 100%;
@@ -103,7 +107,7 @@
                 border-color: #0079BF !important;
               }
 
-              .add-checklist:focus{
+              .add-checklist:focus {
                 border-color: #0079BF !important;
               }
 
@@ -138,6 +142,24 @@
                   padding-left: 24px;
                   padding-right: 24px;
                 }
+
+                input.remove-label{
+                  background-color: #cf513d;
+                  box-shadow: none;
+                  border: none;
+                  color: #fff;
+                }
+
+
+              }
+
+              .edit-btn{
+                display: flex;
+                justify-content: space-between;
+
+                input{
+                  width: 25%;
+                }
               }
 
               .edit-labels-no-color-section {
@@ -148,6 +170,7 @@
                 }
 
                 .edit-labels-no-color-section-text {
+                  text-align: left;
 
                   .u-bottom {
                     margin: 0;
@@ -156,6 +179,7 @@
                   .quiet {
                     color: #5e6c84;
                   }
+
                 }
 
               }
@@ -167,11 +191,12 @@
               h4 {
                 color: #5e6c84;
                 font-size: 12px;
-                font-weight: 500;
+                font-weight: 600;
                 letter-spacing: .04em;
                 line-height: 16px;
                 margin-top: 16px;
                 text-transform: uppercase;
+                text-align: left;
               }
 
               .edit-labels-pop-over {
@@ -179,11 +204,13 @@
                 list-style: none;
                 padding: 0;
 
+
                 li {
                   padding-right: 36px;
                   position: relative;
 
                   .card-label-edit-button {
+                    cursor: pointer;
                     border-radius: 3px;
                     padding: 6px;
                     position: absolute;

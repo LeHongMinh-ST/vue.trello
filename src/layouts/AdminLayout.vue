@@ -4,14 +4,20 @@
       <el-header class="adminHeader">
         <div class="header-container">
           <div class="header-left"></div>
-          <div class="header-center"></div>
+          <div class="header-center">
+            <div class="logo">
+              <img src="../assets/logowab.png" alt="logo">
+            </div>
+          </div>
           <div class="header-right">
             <el-dropdown>
               <el-avatar
                   src="https://i.pinimg.com/originals/eb/59/fc/eb59fc8a76791bc31663723c03c875d2.jpg"></el-avatar>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item><router-link to="/profile">Thông tin</router-link></el-dropdown-item>
-                <el-dropdown-item ><a href="" @click="handleLogout">Đăng xuất</a></el-dropdown-item>
+                <el-dropdown-item>
+                  <router-link to="/profile">Thông tin</router-link>
+                </el-dropdown-item>
+                <el-dropdown-item><a href="" @click="handleLogout">Đăng xuất</a></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -27,13 +33,13 @@
 <script>
 import {mapMutations} from "vuex";
 import api from '../api'
+
 export default {
   name: "AdminLayout",
-  methods:{
-    ...mapMutations('auth', ['updateLoginStatus','updateAuthUser','updateToken']),
+  methods: {
+    ...mapMutations('auth', ['updateLoginStatus', 'updateAuthUser', 'updateToken']),
     handleLogout() {
-      console.log('a')
-      api.logout().then(()=>{
+      api.logout().then(() => {
         localStorage.removeItem('access_token')
         localStorage.removeItem('vuex')
         this.updateLoginStatus(false)
@@ -63,6 +69,7 @@ export default {
   align-items: center;
   justify-content: center;
   background-image: url("../assets/image/wp1874701-we-bare-bears-wallpapers.jpg");
+
   .adminWrap {
     height: 100%;
     display: flex;
@@ -83,9 +90,18 @@ export default {
         padding: 4px;
         justify-content: space-between;
 
-        .header-right{
-          .el-dropdown{
-            .el-avatar{
+        .header-center {
+          .logo {
+            img {
+              width: 60px;
+            }
+          }
+        }
+
+        .header-right {
+          .el-dropdown {
+            .el-avatar {
+              outline: none;
               width: 30px;
               height: 30px;
             }
@@ -94,7 +110,7 @@ export default {
       }
     }
 
-    .adminMain{
+    .adminMain {
       position: relative;
       overflow-y: hidden;
       outline: none;

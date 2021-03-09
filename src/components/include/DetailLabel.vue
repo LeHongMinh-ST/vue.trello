@@ -7,12 +7,15 @@
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
   name: "DetailLabel",
-  props: ['color', 'title', 'card', 'id'],
+  props: ['color', 'title', 'card', 'id', 'isActive'],
   data() {
     return {
-      showIcon: false
+      showIcon: false,
+      dataActive: ''
     }
   },
   methods: {
@@ -26,24 +29,39 @@ export default {
       this.showIcon = !this.showIcon
     },
     checkActive() {
-      this.card.labels.map((label) => {
-        if (label.id === this.id) {
-          this.showIcon = true
-        }
-      })
+      if (!_.isEmpty(this.card)) {
+        this.card.labels.map((label) => {
+          if (label.id === this.id) {
+            this.showIcon = true
+          }
+        })
+      }
     },
+    checkActiveEdit() {
+      if (this.isActive.color === this.color) {
+        this.showIcon = true;
+        this.dataActive = this.color
+      }
+    }
 
   },
   mounted() {
     this.checkActive()
+    this.checkActiveEdit()
   },
   watch: {
     card: function (val) {
-      val.labels.map((label) => {
-        if (label.id === this.id) {
-          this.showIcon = true
-        }
-      })
+        val.labels.map((label) => {
+          if (label.id === this.id) {
+            this.showIcon = true
+          }
+        })
+    },
+    isActive: function (val) {
+      if (val.color === this.color) {
+        this.showIcon = true;
+        this.dataActive = this.color
+      }
     }
   }
 }

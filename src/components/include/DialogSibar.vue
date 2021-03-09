@@ -31,7 +31,7 @@
     <div class="window-module u-clearfix"><h3 class="mod-no-top-margin">Thao tác</h3>
       <div class="u-clearfix">
         <hr>
-        <a class="button-link js-delete-card remove-sidebar hide negate" href="#" title="Xoá">
+        <a class="button-link js-delete-card remove-sidebar hide negate" href="#" @click="deleteCard" title="Xoá">
           <span class="icon-sm icon-remove"><i class="el-icon-minus"></i></span>
           <span class="js-sidebar-action-text">Xoá</span>
         </a>
@@ -71,6 +71,9 @@ export default {
     formatDate(dateString) {
       // Format từ dạng "02/24/2021 18:12:23" thành định dạng kiểu: "24/02/2021"
       return moment(dateString).format('YYYY-MM-DD HH:mm:ss')
+    },
+    deleteCard(){
+      this.$emit('deleteCard',this.card.id)
     }
   }
 }

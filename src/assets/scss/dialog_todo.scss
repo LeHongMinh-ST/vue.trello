@@ -26,7 +26,7 @@
       vertical-align: bottom;
       -webkit-font-smoothing: antialiased;
       background-color: transparent;
-      content: "\E91A";
+      cursor: pointer;
 
       .iconColse {
         line-height: 33px;
@@ -289,7 +289,7 @@
                 }
 
                 .el-checkbox{
-                  margin: 0 5px 0 0;
+                  margin: 0 5px 0 0 !important;
                 }
 
                 .card-detail-badge-due-date-react-container:hover{
@@ -468,6 +468,13 @@
                           padding: 8px 12px;
                           text-decoration: none;
                         }
+                        .description-fake-text-area:visited{
+                          color: #172b4d;
+                        }
+                        .description-fake-text-area:active{
+                          color: #172b4d;
+                        }
+
                       }
 
                       .description-edit {

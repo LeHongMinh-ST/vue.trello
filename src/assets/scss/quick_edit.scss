@@ -1,3 +1,4 @@
+@import "card_color";
 .quick-card-editor {
   background: rgba(0, 0, 0, .6);
   bottom: 0;
@@ -32,7 +33,8 @@
 
   .quick-card-editor-card {
     position: absolute;
-
+    outline: none;
+    border: none;
     .list-card {
       cursor: default;
       background-color: #fff;
@@ -93,8 +95,103 @@
           transition-timing-function: ease;
         }
 
-        .badges{
+        .badges {
+          float: left;
+          max-width: 100%;
+          margin-left: -2px;
+          margin-top: 10px;
 
+          .badge {
+            border-radius: 5px;
+            color: #5e6c84;
+            display: inline-block;
+            margin: 0 4px 4px 0;
+            max-width: 100%;
+            min-height: 20px;
+            overflow: hidden;
+            position: relative;
+            padding: 2px;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            vertical-align: top;
+            cursor: pointer;
+
+            .badge-icon {
+              color: #6b778c;
+              vertical-align: top;
+              margin: 0 2px;
+
+              .el-checkbox {
+                margin: 0;
+
+                .is-checked {
+                  .el-checkbox__inner {
+                    background-color: #61BD4F !important;
+                  }
+                }
+              }
+            }
+
+            .icon-checkbox-checked {
+              display: none;
+            }
+
+            .icon-clock {
+              display: inline-block;
+            }
+
+            .badge-text {
+              font-size: 12px;
+              padding: 0 4px 0 2px;
+              vertical-align: top;
+              white-space: nowrap;
+            }
+          }
+
+          .badge:hover {
+            background-color: #ebecf0;
+
+            .icon-checkbox-checked {
+              display: inline-block;
+            }
+
+            .icon-clock {
+              display: none;
+            }
+          }
+
+          .badge.is-due-complete {
+            background-color: #61bd4f !important;
+            border-radius: 3px;
+            color: #fff;
+
+            .badge-icon {
+              color: #fff;
+              vertical-align: top;
+            }
+          }
+
+          .badge.is-due-near {
+            background-color: #f2d600;
+            border-radius: 3px;
+            color: #fff;
+
+            .badge-icon {
+              color: #fff;
+              vertical-align: top;
+            }
+          }
+
+          .badge.is-due-die {
+            background-color: #eb5a46;
+            border-radius: 3px;
+            color: #fff;
+
+            .badge-icon {
+              color: #fff;
+              vertical-align: top;
+            }
+          }
         }
       }
     }
@@ -161,6 +258,18 @@
       .quick-card-editor-buttons-item:hover{
         transform: translateX(8px);
         transition-duration: 0.05s;
+      }
+    }
+
+    .deadline-quick-edit{
+      position: relative;
+
+      .el-date-editor{
+        z-index: 99999;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
       }
     }
   }

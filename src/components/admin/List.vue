@@ -6,7 +6,7 @@
                   @keydown.enter="updateListTitle" name="" id=""
                   cols="30" rows="10" :value="listTitle" placeholder="Nhập vào tiêu đề danh sách..."
         ></textarea>
-        <div class="menu"><i class="el-icon-more"></i></div>
+        <div class="menu" @click="openActionList"><i class="el-icon-more"></i></div>
       </div>
       <div class="listCard">
         <draggable
@@ -18,9 +18,8 @@
             :move="moveTodo"
         >
           <Todo v-for="(card,index) in item.cards" @openQuickEdit="openQuickEdit" :key="index"
-                @closeControlModal="closeControlModal"
-                @handleShowControl="handleShowControl"
                 @updateData="updateCardList"
+                @openDetailCard="openDetailCard"
                 :id="card.id" :card="card"/>
         </draggable>
         <NewCard v-if="cardAddOpen" v-click-outside="closeAddCard" @addCard="handleAddCard" @closeAddCard="closeAddCard"
@@ -76,6 +75,16 @@ export default {
       }
 
     },
+    openActionList(e){
+      let rect = e.target.getBoundingClientRect();
+      let data = {
+        left: rect.left,
+        top: rect.top,
+        id: this.item.id
+      };
+      this.$emit('openActionList',data)
+
+    },
     loadTitle() {
       this.listTitle = this.item.title;
     },
@@ -115,6 +124,9 @@ export default {
     openQuickEdit(data){
       this.$emit('openQuickEdit',data)
     },
+    openDetailCard(id){
+      this.$emit('openDetailCard',id)
+    }
   },
   mounted() {
     this.loadTitle();

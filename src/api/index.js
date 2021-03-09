@@ -57,11 +57,11 @@ export default {
             data: data
         })
     },
-    logout(){
-      return apiAxios({
-          method:'post',
-          urd:'/auth/logout',
-      })
+    logout() {
+        return apiAxios({
+            method: 'post',
+            urd: '/auth/logout',
+        })
     },
 
     //list
@@ -85,11 +85,17 @@ export default {
             data: data
         })
     },
-    changeIndexList(data,id){
+    changeIndexList(data, id) {
         return apiAxios({
             method: 'put',
             url: 'directories/' + id + '/index',
-            data:data
+            data: data
+        })
+    },
+    deleteList(id) {
+        return apiAxios({
+            method: 'delete',
+            url: 'directories/' + id,
         })
     },
 
@@ -112,29 +118,36 @@ export default {
         return apiAxios({
             method: 'put',
             url: 'cards/' + id + '/directory',
-            data:data
+            data: data
         })
     },
-    changeStatusDeadline(data,id){
+    changeStatusDeadline(data, id) {
         return apiAxios({
             method: 'put',
             url: 'cards/' + id + '/change-status-deadline',
-            data:data
+            data: data
         })
     },
-    changeStatusTodo(data,id){
+    changeStatusTodo(data, id) {
         return apiAxios({
             method: 'put',
             url: '/cards/' + id + '/change-status',
-            data:data
+            data: data
         })
     },
-    updateCard(data,id){
-      return apiAxios({
-          method:'put',
-          url: '/cards/'+id,
-          data:data
-      })
+    updateCard(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: '/cards/' + id,
+            data: data
+        })
+    },
+
+    deleteCard(id) {
+        return apiAxios({
+            method: 'delete',
+            url: '/cards/' + id,
+        })
     },
 
     //label
@@ -144,24 +157,96 @@ export default {
             url: '/labels'
         })
     },
-    addLabel(data,id){
+    addLabel(data, id) {
         return apiAxios({
             method: 'post',
-            url: '/cards/'+id+'/label',
+            url: '/cards/' + id + '/label',
             data: data
         })
     },
-    detachLabels(data,id){
+    detachLabels(data, id) {
         return apiAxios({
             method: 'delete',
-            url: '/cards/'+id+'/detach-labels',
+            url: '/cards/' + id + '/detach-labels',
             data: data
         })
     },
-    attachLabels(data,id){
+    attachLabels(data, id) {
         return apiAxios({
             method: 'post',
-            url: '/cards/'+id+'/attach-labels',
+            url: '/cards/' + id + '/attach-labels',
+            data: data
+        })
+    },
+
+    updateLabels(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: '/labels/' + id,
+            data: data
+        })
+    },
+    deleteLabels(data, id) {
+        return apiAxios({
+            method: 'delete',
+            url: '/labels/' + id,
+            data: data
+        })
+    },
+
+    //Checklist
+
+    addCheckList(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/check-lists',
+            data: data
+        })
+    },
+
+    updateCheckListTitle(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: '/check-lists/' + id,
+            data: data
+        })
+    },
+
+    deleteChecklist(id) {
+        return apiAxios({
+            method: 'delete',
+            url: '/check-lists/' + id,
+        })
+    },
+
+    //ChildCheckList
+
+    addCheckListChild(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/check-list-childs',
+            data: data
+        })
+    },
+
+    updateCheckListTitleChild(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: '/check-list-childs/' + id,
+            data: data
+        })
+    },
+
+    deleteChecklistChild(id) {
+        return apiAxios({
+            method: 'delete',
+            url: '/check-list-childs/' + id,
+        })
+    },
+    changeStatusChild(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: '/check-list-childs/' + id + '/change-status',
             data: data
         })
     }
