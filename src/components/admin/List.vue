@@ -64,7 +64,7 @@ export default {
       let directory = todo.parentElement;
 
       let payload = {
-        index: e.draggedContext.futureIndex,
+        index: e.draggedContext.futureIndex + 1,
         directory_id: directory.parentElement.getAttribute('id')
       }
 

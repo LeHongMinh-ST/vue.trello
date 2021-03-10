@@ -22,7 +22,8 @@
           >
           </el-date-picker>
         </a>
-        <a class="button-link js-attach" href="#" title="Đính kèm">
+        <a class="button-link btn-upload" href="#" title="Đính kèm">
+          <input id="uploadFile" @change="uploadFile" class="uploadFile" type="file"/>
           <span class="icon-sm icon-attachment"><i class="el-icon-paperclip"></i></span>
           <span class="js-sidebar-action-text">Đính kèm</span>
         </a>
@@ -42,16 +43,32 @@
 
 <script>
 import moment from 'moment'
-
+import api from '../../api'
 export default {
   name: "DialogSibar",
   props: ['card'],
   data() {
     return {
       deadLine: '',
+      file:''
     }
   },
   methods: {
+    uploadFile(e){
+      if(e.target.files.length){
+        this.file = e.target.files[0]
+      }
+
+      const formData = new FormData();
+      if(this.file != null){
+        formData.append('file',this.file);
+      }
+
+      api.uploadFileCard(formData,this.card.id).then(()=>{
+        this.$emit('updateDetailCard')
+      })
+
+    },
     changeDeadline() {
       let data = {
         deadline : this.formatDate(this.deadLine)

@@ -249,5 +249,20 @@ export default {
             url: '/check-list-childs/' + id + '/change-status',
             data: data
         })
+    },
+    //file
+    uploadFileCard(data, id) {
+        return apiAxios({
+            method: 'post',
+            url: 'cards/' + id + '/upload-file',
+            data: data
+        })
+    },
+
+    deleteFile(id){
+        return apiAxios({
+            method:'delete',
+            url:'/files/'+id
+        })
     }
 }

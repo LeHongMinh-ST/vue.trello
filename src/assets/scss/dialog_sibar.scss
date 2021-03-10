@@ -46,6 +46,16 @@
       a:visited{
         color: #172b4d;
       }
+
+      .btn-upload{
+        cursor: pointer;
+        position: relative;
+        .uploadFile{
+          position: absolute;
+          opacity: 0;
+          cursor: pointer;
+        }
+      }
       .icon-sm{
         height: 20px;
         font-size: 16px;

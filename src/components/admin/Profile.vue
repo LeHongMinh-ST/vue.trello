@@ -7,11 +7,12 @@
             <div class="info">
               <div class="infoAvatar">
                 <div class="avatarCover">
-                  <img :src="profile.avatar" alt="">
+                  <img v-if="authUser.avatar!=null" :src="authUser.avatar" alt="">
+                  <img v-else :src="profile.avatar" alt="">
                 </div>
               </div>
               <div class="infoName">
-                <span class="title">{{profile.name}}</span>
+                <span class="title">{{authUser.name}}</span>
               </div>
             </div>
           </div>
@@ -34,7 +35,8 @@
                 <div class="profileAvatar">
                   <h3>hình đại diện</h3>
                   <div class="avatarCover">
-                    <img :src="profile.avatar" alt="">
+                    <img v-if="authUser.avatar!=null" :src="authUser.avatar" alt="">
+                    <img v-else :src="profile.avatar" alt="">
                   </div>
                   <button class="changeAvatar">Thay đổi</button>
                 </div>
@@ -43,7 +45,7 @@
                     <span>Tên đầy đủ</span>
                   </div>
                   <div class="formInput">
-                    <input class="formControl" type="text" :value="profile.name">
+                    <input class="formControl" type="text" :value="authUser.name">
                   </div>
 
                   <button class="saveProfile">Lưu</button>
@@ -66,9 +68,12 @@ export default {
     AdminLayout
   },
   computed:{
+    ...mapState('auth',[
+        'authUser'
+    ]),
     ...mapState('profile',[
         'profile'
-    ])
+    ]),
   }
 }
 </script>

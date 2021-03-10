@@ -22,7 +22,7 @@ export default {
   justify-content: center;
   background-color: #0093e9;
   /*background-image: ;*/
-  background-image: url("../assets/image/1620229.png"), linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
+  background-image: url("../assets/image/wp1874695-we-bare-bears-wallpapers.jpg"), linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
 }
 
 </style>

@@ -37,7 +37,8 @@
       </div>
       <ModalSidebar v-if="showControlModalSidebar" :card="card" :labels="labels" @closeLabelModal="closeControlModal"
                     :offset="offset" @reloadLabel="reloadLabel"/>
-      <QuickEdit v-if="showQuickEdit" @updateCard="quickEditCardTitle" @showControl="handleShowControl" @deleteCard="deleteCard" @closeQuickEdit="closeQuickEdit" :card="card"
+      <QuickEdit v-if="showQuickEdit" @updateCard="quickEditCardTitle" @showControl="handleShowControl"
+                 @deleteCard="deleteCard" @closeQuickEdit="closeQuickEdit" :card="card"
                  :offset="offsetEdit" @openModal="openDetailCard" @updateCardList="getDataList"/>
       <el-dialog v-if="dialogFormVisible" id="detailTodo" class="dialogTodo" :append-to-body="true" width="40%"
                  :show-close="false"
@@ -163,13 +164,28 @@
                     </div>
                   </div>
                 </div>
+                <div v-if="cardDetail.files.length > 0" class="window-module attachments-section u-clearfix">
+                  <div class="window-module-title window-module-title-no-divider">
+                    <span
+                        class="window-module-title-icon icon-lg icon-attachment"><i
+                        class="el-icon-paperclip"></i></span>
+                    <h3 class="u-inline-block">Các tập tin đính kèm</h3>
+                  </div>
+                  <div class="u-gutter">
+                    <div class="u-clearfix attachment-list ui-sortable">
+                      <File v-for="(item,index) in cardDetail.files" :file="item"
+                            @updateCardDetail="getDetailCard(cardDetail.id)"  @showEditFile="openEditFile" :key="index"/>
+                    </div>
+                  </div>
+                </div>
                 <div v-if="cardDetail.check_lists.length > 0"
                      class="checklist-list window-module js-checklist-list js-no-higher-edits ui-sortable">
                   <CheckList v-for="(item, index) in cardDetail.check_lists" @updateCheckList="reloadDetail"
                              :checkList="item" :key="index" :card="cardDetail"/>
                 </div>
               </div>
-              <DialogSibar @showControl="handleShowControl" @deleteCard="deleteCard" @changeDeadline="changeDeadline"
+              <DialogSibar @updateDetailCard="getDetailCard(cardDetail.id)" @showControl="handleShowControl"
+                           @deleteCard="deleteCard" @changeDeadline="changeDeadline"
                            :card="cardDetail"/>
             </div>
           </div>
@@ -178,6 +194,7 @@
       </el-dialog>
       <Action v-if="showActionList" @closeAction="closeActionList" @deleteList="deleteList" :offset="offset"
               v-click-outside="closeActionList"/>
+      <EditFile v-if="showEditFile" :offset="offsetEditFile"/>
     </template>
   </AdminLayout>
 </template>
@@ -197,6 +214,8 @@ import CheckList from "@/components/include/CheckList";
 import DialogSibar from "@/components/include/DialogSibar";
 import moment from "moment";
 import Action from "@/components/include/Action";
+import File from "@/components/include/File";
+import EditFile from "@/components/include/EditFile";
 
 export default {
   name: "Admin",
@@ -207,6 +226,7 @@ export default {
       showControlModalSidebar: false,
       showQuickEdit: false,
       showActionList: false,
+      showActionFile: false,
       labels: [],
       card: [],
       dialogFormVisible: false,
@@ -218,6 +238,8 @@ export default {
       cardTitle: '',
       deadline: '',
       description: '',
+      offsetEditFile:{},
+      showEditFile:false
     }
   },
   components: {
@@ -229,7 +251,9 @@ export default {
     QuickEdit,
     CheckList,
     DialogSibar,
-    Action
+    Action,
+    File,
+    EditFile
   },
   methods: {
     ...mapMutations('home', [
@@ -241,8 +265,9 @@ export default {
       let id = e.draggedContext.element.id
 
       let payload = {
-        index: e.draggedContext.futureIndex,
+        index: e.draggedContext.futureIndex + 1,
       }
+      console.log(payload)
       if (id !== e.draggedContext.futureIndex) {
         api.changeIndexList(payload, id).then(() => {
           this.getDataList()
@@ -250,10 +275,14 @@ export default {
       }
 
     },
+    openEditFile(data){
+      console.log(data)
+      this.offsetEditFile = data
+      this.showEditFile = true;
+    }
+    ,
     openActionList(data) {
-      console.log(data)
       this.offset = data
-      console.log(data)
       this.showActionList = true
     },
     closeActionList() {
@@ -393,7 +422,7 @@ export default {
       })
     },
 
-    quickEditCardTitle(data){
+    quickEditCardTitle(data) {
       api.updateCard(data, data.id).then(() => {
         this.getDetailCard(this.card.id)
       })

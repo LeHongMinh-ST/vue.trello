@@ -3,7 +3,7 @@
     <template #login>
       <main class="loginWrap">
         <div class="logoWrap">
-          <img class="logo" src="../../assets/image/logo.jpg" alt=""></div>
+          <img class="logo" src="../../assets/logowab.png" alt=""></div>
         <el-form :model="loginForm" :rules="rules" ref="ruleForm">
           <div class="formInputWrap">
             <div class="sui-input-wrap">
@@ -98,10 +98,10 @@ export default {
       },
       rules: {
         email: [
-          {required: true, message: 'Vui lòng nhập email!', trigger: 'blur'},
+          {required: true, message: 'Vui lòng nhập email!', trigger: ['blur','change']},
         ],
         password: [
-          {required: true, message: 'Vui lòng nhập mật khẩu!', trigger: 'blur'},
+          {required: true, message: 'Vui lòng nhập mật khẩu!', trigger: ['blur','change']},
         ],
       },
     }
@@ -288,9 +288,9 @@ export default {
 
   .submitButton {
     width: 100%;
-    height: 50px;
+    height: 40px;
     border: none;
-    background: #5cdee4;
+    background: #93453F;
     color: #fff;
     text-decoration: none;
     font-size: 14px;
