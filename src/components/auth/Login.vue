@@ -67,13 +67,14 @@ export default {
         }
         if (valid) {
           api.login(data).then((response) => {
-            localStorage.setItem('access_token', response.data.access_token)
-            this.updateToken(response.data.access_token)
-            this.updateLoginStatus(true)
+            if (response){
+              localStorage.setItem('access_token', response.data.access_token)
+              this.updateToken(response.data.access_token)
+              this.updateLoginStatus(true)
+            }
 
             if (this.$router.currentRoute.name !== 'Admin') {
               this.$router.push('/admin')
-              this.$message({message: 'Xin chào ', type: 'success'});
             }
           }).catch(() => {
             this.$message({message: 'Có 1 lỗi gì đó', type: 'error'});
@@ -134,7 +135,7 @@ export default {
   }
 
   .formInputWrap {
-    margin-bottom: 24px;
+    margin-bottom: 15px;
 
 
     .formInput {
@@ -344,7 +345,7 @@ export default {
       margin: 0;
       display: inline-flex;
       outline: 0;
-      color: #5cdee4;
+      color: #93453F;
 
 
     }

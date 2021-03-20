@@ -69,10 +69,14 @@ export default {
         this.$emit('updateCheckList')
       })
     },
-    deleteChecklist() {
-      api.deleteChecklist(this.checkList.id).then(() => {
-        this.$emit('updateCheckList')
-      })
+    deleteChecklist(e) {
+      let rect = e.target.getBoundingClientRect();
+      let data = {
+        left: rect.left,
+        top: rect.top,
+        data: this.checkList
+      }
+      this.$emit('openDeleteCheckList',data)
     },
     closeShowEditCheckList() {
       this.showEditCheckList = false

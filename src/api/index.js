@@ -151,10 +151,11 @@ export default {
     },
 
     //label
-    getLabels() {
+    getLabels(params = null) {
         return apiAxios({
             method: 'get',
-            url: '/labels'
+            url: '/labels',
+            params: params
         })
     },
     addLabel(data, id) {
@@ -259,10 +260,34 @@ export default {
         })
     },
 
-    deleteFile(id){
+    deleteFile(id) {
         return apiAxios({
-            method:'delete',
-            url:'/files/'+id
+            method: 'delete',
+            url: '/files/' + id
+        })
+    },
+
+    updteFile(data, id) {
+        return apiAxios({
+            method: 'put',
+            url: '/files/' + id,
+            data: data
+        })
+    },
+
+    updatePassword(data) {
+        return apiAxios({
+            method: 'put',
+            url: '/users/password',
+            data: data
+        })
+    },
+
+    updateInfo(data) {
+        return apiAxios({
+            method: 'post',
+            url: '/users',
+            data: data
         })
     }
 }

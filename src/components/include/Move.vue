@@ -1,3 +1,43 @@
+<template>
+  <div class="pop-over is-shown" data-elevation="1" :style="{left: offset.left+'px', top: offset.top+'px'}">
+    <div class="no-back">
+      <div class="pop-over-header js-pop-over-header"><span class="pop-over-header-title">Di chuyển thẻ</span><a
+          href="#" class="pop-over-header-close-btn icon-sm icon-close"></a></div>
+      <div>
+        <div class="pop-over-content js-pop-over-content u-fancy-scrollbar js-tab-parent" style="max-height: 395px;">
+          <div>
+            <div>
+              <div class="pop-over-section"><h4>Chọn đích đến</h4>
+                <div class="form-grid">
+                  <div class="button-link setting form-grid-child form-grid-child-threequarters"><span class="label">Danh sách</span><span
+                      class="value js-list-value">Test</span><label>Danh sách</label><select class="js-select-list">
+                    <option value="60433d196cb19624f8eb53b6" selected="selected">Test (hiện tại)</option>
+                    <option value="6044ca9b4e55244f692ebe6e">đấ</option>
+                    <option value="6044ca9b9641e1721da32ff0">đấ</option>
+                    <option value="6044ca9a11133617d117969d">dsadasda]</option>
+                  </select></div>
+                  <div class="button-link setting form-grid-child"><span class="label">Vị trí</span><span
+                      class="value js-pos-value">1</span><label>Vị trí</label><select class="js-select-position">
+                    <option value="top" selected="selected">1</option>
+                  </select></div>
+                </div>
+                <input class="nch-button nch-button--primary wide js-submit" type="submit" value="Di chuyển"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Move"
+}
+</script>
+
+<style scoped lang="scss">
+
 .pop-over {
   z-index: 9999;
   background: #fff;
@@ -316,3 +356,4 @@
     }
   }
 }
+</style>

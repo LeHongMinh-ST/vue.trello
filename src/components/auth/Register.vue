@@ -110,7 +110,6 @@ export default {
       rules: {
         name: [
           {required: true, message: 'Vui lòng nhập họ và tên!', trigger: 'blur'},
-          {min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur'}
         ],
         email: [
           {required: true, message: 'Vui lòng nhập email!', trigger: 'blur'},

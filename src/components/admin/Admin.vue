@@ -4,7 +4,7 @@
       <div class="adminMainContent">
         <div class="main-header">
           <div class="logo">
-            <h1>{{ authUser.name }}</h1>
+            <h1 v-if="authUser.name">{{ authUser.name }}</h1>
             <!--              <img src="" alt="">-->
           </div>
         </div>
@@ -35,7 +35,8 @@
           </div>
         </div>
       </div>
-      <ModalSidebar v-if="showControlModalSidebar" :card="card" :labels="labels" @closeLabelModal="closeControlModal"
+      <ModalSidebar v-if="showControlModalSidebar" @searchLabel="searchDatalabel" :card="card" :labels="labels"
+                    @closeLabelModal="closeControlModal"
                     :offset="offset" @reloadLabel="reloadLabel"/>
       <QuickEdit v-if="showQuickEdit" @updateCard="quickEditCardTitle" @showControl="handleShowControl"
                  @deleteCard="deleteCard" @closeQuickEdit="closeQuickEdit" :card="card"
@@ -174,14 +175,14 @@
                   <div class="u-gutter">
                     <div class="u-clearfix attachment-list ui-sortable">
                       <File v-for="(item,index) in cardDetail.files" :file="item"
-                            @updateCardDetail="getDetailCard(cardDetail.id)"  @showEditFile="openEditFile" :key="index"/>
+                            @openDeleteFile="openDeleteFile" @showEditFile="openEditFile" :key="index"/>
                     </div>
                   </div>
                 </div>
                 <div v-if="cardDetail.check_lists.length > 0"
                      class="checklist-list window-module js-checklist-list js-no-higher-edits ui-sortable">
                   <CheckList v-for="(item, index) in cardDetail.check_lists" @updateCheckList="reloadDetail"
-                             :checkList="item" :key="index" :card="cardDetail"/>
+                             :checkList="item" @openDeleteCheckList="openDeleteCheckList" :key="index" :card="cardDetail"/>
                 </div>
               </div>
               <DialogSibar @updateDetailCard="getDetailCard(cardDetail.id)" @showControl="handleShowControl"
@@ -192,9 +193,11 @@
         </div>
 
       </el-dialog>
+      <EditFile @closeFileEdit="closeFileEdit" @reload="reloadDetail" v-if="showEditFile" :offset="offsetEditFile"/>
+
       <Action v-if="showActionList" @closeAction="closeActionList" @deleteList="deleteList" :offset="offset"
               v-click-outside="closeActionList"/>
-      <EditFile v-if="showEditFile" :offset="offsetEditFile"/>
+      <Delete v-if="showDelete" :offset="offsetDelete" @reloadList="reloadList" @closeDelete="closeDelete" @reloadCard="reloadDetail"/>
     </template>
   </AdminLayout>
 </template>
@@ -216,6 +219,7 @@ import moment from "moment";
 import Action from "@/components/include/Action";
 import File from "@/components/include/File";
 import EditFile from "@/components/include/EditFile";
+import Delete from "@/components/include/Delete";
 
 export default {
   name: "Admin",
@@ -233,13 +237,15 @@ export default {
       editDescriptionModal: false,
       offset: {},
       offsetEdit: {},
+      offsetEditFile: {},
+      offsetDelete: {},
       isComplete: false,
       isDeadline: 0,
       cardTitle: '',
       deadline: '',
       description: '',
-      offsetEditFile:{},
-      showEditFile:false
+      showEditFile: false,
+      showDelete: false
     }
   },
   components: {
@@ -253,21 +259,20 @@ export default {
     DialogSibar,
     Action,
     File,
-    EditFile
+    EditFile,
+    Delete
   },
   methods: {
     ...mapMutations('home', [
       'updateList', 'updateCardDetail'
     ]),
     moveList(e) {
-      console.log(e)
-
       let id = e.draggedContext.element.id
 
       let payload = {
-        index: e.draggedContext.futureIndex + 1,
+        index: e.draggedContext.futureIndex,
       }
-      console.log(payload)
+
       if (id !== e.draggedContext.futureIndex) {
         api.changeIndexList(payload, id).then(() => {
           this.getDataList()
@@ -275,8 +280,7 @@ export default {
       }
 
     },
-    openEditFile(data){
-      console.log(data)
+    openEditFile(data) {
       this.offsetEditFile = data
       this.showEditFile = true;
     }
@@ -375,6 +379,7 @@ export default {
     closeModal() {
       this.showControlModalSidebar = false
       this.dialogFormVisible = false
+      this.closeAll()
     },
     deleteCard(data) {
       api.deleteCard(data).then(() => {
@@ -382,6 +387,11 @@ export default {
         this.getDataList()
       })
     },
+    reloadList(){
+      this.closeModal()
+      this.getDataList()
+    }
+    ,
     openControlLabel(e) {
       let rect = e.target.getBoundingClientRect();
       let data = {
@@ -490,8 +500,11 @@ export default {
     },
     closeAll() {
       this.showActionList = false;
-      this.showControlModalSidebar = false
-      this.showQuickEdit = false
+      this.showQuickEdit = false;
+      this.showEditFile = false;
+      this.dialogFormVisible = false;
+      this.showDelete = false
+
     },
     checkComplate() {
       if (this.cardDetail.status == 0) {
@@ -510,6 +523,31 @@ export default {
       } else {
         this.isDeadline = 0;
       }
+    },
+    searchDatalabel(data) {
+      let payload = {
+        q: data
+      }
+      api.getLabels(payload).then((response) => {
+        console.log(response.data.data)
+        this.labels = response.data.data
+      })
+    },
+    closeFileEdit() {
+      this.showEditFile = false
+    },
+    closeDelete() {
+      this.showDelete = false
+    },
+    openDeleteFile(data) {
+      data.type = "file"
+      this.offsetDelete = data
+      this.showDelete = true
+    },
+    openDeleteCheckList(data) {
+      data.type = "check_list"
+      this.offsetDelete = data
+      this.showDelete = true
     }
   },
   computed: {

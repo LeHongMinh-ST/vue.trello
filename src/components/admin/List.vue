@@ -58,13 +58,12 @@ export default {
   },
   methods: {
     moveTodo(e) {
-      console.log(e)
       let id = e.draggedContext.element.id
       let todo = e.to.parentElement
       let directory = todo.parentElement;
 
       let payload = {
-        index: e.draggedContext.futureIndex + 1,
+        index: e.draggedContext.futureIndex,
         directory_id: directory.parentElement.getAttribute('id')
       }
 
@@ -214,6 +213,7 @@ export default {
         margin: 6px 0;
         padding: 4px 0 4px 8px;
         cursor: pointer;
+        overflow: hidden;
       }
 
       textarea:focus {

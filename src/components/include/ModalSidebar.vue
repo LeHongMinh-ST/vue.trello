@@ -2,12 +2,12 @@
   <div class="pop-over is-shown" :style="{left: offset.left+'px', top: offset.top+'px'}">
     <div class="no-back">
       <div class="pop-over-header js-pop-over-header">
-        <a href="#" v-if="showAddLabel" @click="backLabel"
+        <a href="#" v-if="showAddLabel || showDeleteLabel" @click="backLabel"
            class="pop-over-header-back-btn icon-sm icon-back is-shown">
           <i class="el-icon-arrow-left"></i>
         </a>
         <span v-if="offset.type === 'label'" class="pop-over-header-title">{{
-            showAddLabel ? (showEditLabel ? 'Sửa nhãn gián' : 'Tạo nhãn mới') : 'Nhãn'
+            showDeleteLabel? 'Xóa nhãn':(showAddLabel ? (showEditLabel ? 'Sửa nhãn gián' : 'Tạo nhãn mới') : 'Nhãn')
           }}</span>
         <span v-else class="pop-over-header-title">Tạo mới công việc</span>
         <a @click="closeLabelModal" class="pop-over-header-close-btn icon-sm icon-close">
@@ -19,6 +19,9 @@
              style="max-height: 368px;">
           <div>
             <div>
+              <div v-if="showDeleteLabel"><p>Dữ liệu không thể khôi phục.</p><input
+                  class="btn-confirm full nch-button nch-button--danger" type="submit" @click="deleteLabel" value="Xoá"
+                  data-test-id=""></div>
               <div v-if="showAddLabel && !showEditLabel" class="edit-label">
                 <label for="labelName">Tên</label>
                 <input id="labelName"
@@ -42,7 +45,9 @@
                   <div class="u-float-right js-accessory-view-holder"></div>
                 </div>
               </div>
-              <div v-if="!showAddLabel" class="pop-over-section"><h4>Nhãn</h4>
+              <input v-if="!showAddLabel && !showDeleteLabel" class="js-autofocus label-search" v-model="nameLabel" @input="searchLabel"
+                     type="text" placeholder="Tìm nhãn..." value="" autocomplete="off">
+              <div v-if="!showAddLabel && !showDeleteLabel" class="pop-over-section"><h4>Nhãn</h4>
                 <ul class="edit-labels-pop-over js-labels-list">
                   <li v-for="(label,index) in labels" :key="index"><a class="card-label-edit-button"
                                                                       @click="editLabel(label)"><i
@@ -74,7 +79,7 @@
                 <div class="u-clearfix edit-btn">
                   <input class="nch-button nch-button--primary wide js-submit" @click="updateLabel" type="submit"
                          value="Lưu">
-                  <input type="submit" value="Xoá" @click="deleteLabel"
+                  <input type="submit" value="Xoá" @click="showConfirmDelete"
                          class="remove-label nch-button nch-button--danger">
                 </div>
               </div>
@@ -163,11 +168,11 @@ export default {
     changeLabel(data) {
       if (data.isActive) {
         data.directory_id = this.card.directory_id
-        api.detachLabels(data, this.card.id).then(()=>{
+        api.detachLabels(data, this.card.id).then(() => {
           this.$emit('reloadLabel', this.card.id)
         })
       } else {
-        api.attachLabels(data, this.card.id).then(()=>{
+        api.attachLabels(data, this.card.id).then(() => {
           this.$emit('reloadLabel', this.card.id)
         })
       }
@@ -190,6 +195,12 @@ export default {
         this.backLabel()
       })
     },
+    showConfirmDelete() {
+      this.showDeleteLabel = true
+      this.showEditLabel = false
+      this.showAddLabel = false
+    }
+    ,
     updateLabel() {
       let data = {
         name: this.titleLabel,
@@ -204,10 +215,24 @@ export default {
       })
     },
     backLabel() {
-      this.showAddLabel = false
-      this.showEditLabel = false
+      if (this.showEditLabel) {
+        this.showAddLabel = false
+        this.showEditLabel = false
+      }
+
+      if (this.showAddLabel){
+        this.showAddLabel = false
+      }
+
+      if (this.showDeleteLabel) {
+        this.showDeleteLabel = false
+        this.showEditLabel = true
+        this.showAddLabel = true
+      }
+
+
     },
-    addCheckList(){
+    addCheckList() {
       let data = {
         title: this.titleCheckList,
         card_id: this.card.id
@@ -217,6 +242,9 @@ export default {
         this.$emit('reloadLabel', this.card.id)
         this.closeLabelModal()
       })
+    },
+    searchLabel() {
+      this.$emit('searchLabel', this.nameLabel)
     }
   }, computed: {
     ...mapState('home', [
@@ -226,6 +254,7 @@ export default {
   watch: {},
   data() {
     return {
+      nameLabel: "",
       thisAddLabels: [],
       arrayLabels: [
         'green',
@@ -241,10 +270,11 @@ export default {
       ],
       showAddLabel: false,
       showEditLabel: false,
+      showDeleteLabel: false,
       arrayActive: [],
       titleLabel: '',
       isActive: '',
-      titleCheckList:''
+      titleCheckList: ''
     }
   },
   directives: {

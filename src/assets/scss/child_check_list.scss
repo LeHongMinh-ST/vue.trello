@@ -163,6 +163,14 @@
             .delete-item {
               .delete-child {
                 display: block;
+                height: 16px;
+                width: 16px;
+                position: relative;
+                span{
+                  position: absolute;
+                  height: 16px!important;
+                  width: 16px!important;
+                }
               }
             }
           }

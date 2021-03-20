@@ -67,7 +67,10 @@
           >
           </el-date-picker>
         </a>
-
+        <a class="quick-card-editor-buttons-item js-edit-labels" @click="deleteCard" href="#"><span
+            class="icon-sm icon-label light"><i class="el-icon-right"></i></span><span
+            class="quick-card-editor-buttons-item-text">Di chuyển</span>
+        </a>
         <a class="quick-card-editor-buttons-item js-edit-labels" @click="deleteCard" href="#"><span
             class="icon-sm icon-label light"><i class="el-icon-close"></i></span><span
             class="quick-card-editor-buttons-item-text">Xóa</span>

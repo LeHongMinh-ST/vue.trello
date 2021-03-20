@@ -32,7 +32,7 @@ export default {
       if (this.$refs.title.value.length>0){
         let data = {
           "title": this.$refs.title.value,
-          "index": this.list.length +1,
+          "index": this.list.length,
         }
         this.$emit('addList',data)
         this.closeNewList()

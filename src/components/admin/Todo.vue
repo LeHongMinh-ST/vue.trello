@@ -1,5 +1,5 @@
 <template>
-  <div class="cardTodo">
+  <div class="cardTodo" @contextmenu="handler()">
     <div class="detailTodo" @click.left="openDetailCard" @click.right="openQuickEdit">
       <span class="btn-edit" @click="btnOpenEdit">
         <i class="el-icon-edit"></i>
@@ -62,6 +62,9 @@ export default {
     ...mapMutations('home', [
       'showLable', 'updateCardDetail'
     ]),
+    handler(e){
+      e.preventDefault()
+    },
     handleShowLable(e) {
       e.stopPropagation()
       this.showLable()

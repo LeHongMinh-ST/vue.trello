@@ -36,7 +36,7 @@ export default {
       let title= this.$refs.cardTitle.value
 
       if (title.length > 0){
-        let index = this.getList(this.directory.id).cards.length +1
+        let index = this.getList(this.directory.id).cards.length
         let data = {
           title: title,
           directory_id: this.directory.id,

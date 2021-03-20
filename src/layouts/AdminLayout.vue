@@ -5,18 +5,23 @@
         <div class="header-container">
           <div class="header-left"></div>
           <div class="header-center">
-            <div class="logo">
+            <a class="logo" href="/admin">
               <img src="../assets/logowab.png" alt="logo">
-            </div>
+            </a>
           </div>
           <div class="header-right">
             <el-dropdown>
               <el-avatar
-                  src="https://i.pinimg.com/originals/eb/59/fc/eb59fc8a76791bc31663723c03c875d2.jpg"></el-avatar>
+                  v-if="authUser.avatar!=null" :src="'http://vuecourse.zent.edu.vn/storage/products/'+authUser.avatar"
+                  alt=""></el-avatar>
+              <el-avatar
+                  v-else :src="profile.avatar" alt=""></el-avatar>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                  <router-link to="/profile">Thông tin</router-link>
-                </el-dropdown-item>
+                <router-link to="/profile">
+                  <el-dropdown-item>
+                    Thông tin
+                  </el-dropdown-item>
+                </router-link>
                 <el-dropdown-item><a href="" @click="handleLogout">Đăng xuất</a></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -31,7 +36,7 @@
 </template>
 
 <script>
-import {mapMutations} from "vuex";
+import {mapMutations, mapState} from "vuex";
 import api from '../api'
 
 export default {
@@ -52,6 +57,14 @@ export default {
         }
       })
     }
+  },
+  computed: {
+    ...mapState('auth', [
+      'authUser'
+    ]),
+    ...mapState('profile', [
+      'profile'
+    ]),
   }
 }
 </script>
@@ -91,6 +104,8 @@ export default {
 
         .header-center {
           .logo {
+            cursor: pointer;
+
             img {
               width: 60px;
             }
@@ -104,6 +119,10 @@ export default {
               width: 30px;
               height: 30px;
             }
+
+            a{
+              text-decoration: none;
+            }
           }
         }
       }
@@ -111,7 +130,7 @@ export default {
 
     .adminMain {
       position: relative;
-      overflow-y: hidden;
+      overflow-y: auto;
       outline: none;
       padding: 0;
       height: 100%;

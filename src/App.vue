@@ -39,6 +39,9 @@ html,body{
   height: 100%;
 }
 
+a{
+  text-decoration: none;
+}
 body, button, html, input, select, textarea {
   color: #172b4d;
   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;

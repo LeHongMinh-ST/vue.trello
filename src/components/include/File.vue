@@ -12,7 +12,7 @@
         title="9 tháng 3 năm 2021 21:59">{{formatDate(file.created_at)}}</span></span><span><a
         class="attachment-thumbnail-details-title-options-item dark-hover js-confirm-delete"
         href="#"><span
-        class="attachment-thumbnail-details-options-item-text" @click="deleteFile">Xoá</span></a></span><span><a
+        class="attachment-thumbnail-details-options-item-text" @click="deleteFile">Xoá</span></a></span> - <span><a
         class="attachment-thumbnail-details-title-options-item dark-hover js-edit" @click="editFile" href="#"><span
         class="attachment-thumbnail-details-options-item-text" >Chỉnh sửa</span></a></span></span><span
         class="quiet attachment-thumbnail-details-options"></span></p>
@@ -21,7 +21,7 @@
 
 <script>
 import moment from "moment";
-import api from "../../api";
+
 export default {
   name: "File",
   props: ['file'],
@@ -29,10 +29,14 @@ export default {
     formatDate(dateString){
       return 'lúc '+ moment(dateString).format('HH:mm:ss') + ' ngày '+ moment(dateString).format('DD-MM-YYYY')
     },
-    deleteFile(){
-      api.deleteFile(this.file.id).then(()=>{
-        this.$emit('updateCardDetail')
-      })
+    deleteFile(e){
+      let rect = e.target.getBoundingClientRect();
+      let data = {
+        left: rect.left,
+        top: rect.top,
+        data: this.file
+      }
+      this.$emit('openDeleteFile',data)
     },
     editFile(e){
       let rect = e.target.getBoundingClientRect();
@@ -89,6 +93,9 @@ export default {
     a {
       color: #172b4d;
       padding-left: 3px;
+    }
+    a:hover{
+      text-decoration: solid;
     }
 
     .attachment-thumbnail-details-title-options {
