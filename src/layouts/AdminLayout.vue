@@ -3,7 +3,9 @@
     <el-container class="adminWrap">
       <el-header class="adminHeader">
         <div class="header-container">
-          <div class="header-left"></div>
+          <div class="header-left">
+            <a href="/admin" class="heard-btn"><span><i class="el-icon-house"></i></span></a>
+          </div>
           <div class="header-center">
             <a class="logo" href="/admin">
               <img src="../assets/logowab.png" alt="logo">
@@ -12,7 +14,7 @@
           <div class="header-right">
             <el-dropdown>
               <el-avatar
-                  v-if="authUser.avatar!=null" :src="'http://vuecourse.zent.edu.vn/storage/products/'+authUser.avatar"
+                  v-if="authUser.avatar!=null" :src="'http://vuecourse.zent.edu.vn/storage/users/'+authUser.avatar"
                   alt=""></el-avatar>
               <el-avatar
                   v-else :src="profile.avatar" alt=""></el-avatar>
@@ -22,7 +24,9 @@
                     Thông tin
                   </el-dropdown-item>
                 </router-link>
-                <el-dropdown-item><a href="" @click="handleLogout">Đăng xuất</a></el-dropdown-item>
+                <span @click="handleLogout">
+                  <el-dropdown-item>Đăng xuất</el-dropdown-item>
+                </span>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -37,25 +41,21 @@
 
 <script>
 import {mapMutations, mapState} from "vuex";
-import api from '../api'
 
 export default {
   name: "AdminLayout",
   methods: {
     ...mapMutations('auth', ['updateLoginStatus', 'updateAuthUser', 'updateToken']),
-    async handleLogout() {
+    handleLogout() {
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('vuex')
+      this.updateLoginStatus(false)
+      this.updateToken(null)
+      this.updateAuthUser({})
 
-      await api.logout().then(() => {
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('vuex')
-        this.updateLoginStatus(false)
-        this.updateToken(null)
-        this.updateAuthUser({})
-
-        if (this.$router.currentRoute.name !== 'Login') {
-          this.$router.push('/login')
-        }
-      })
+      if (this.$router.currentRoute.name !== 'Login') {
+        this.$router.push({name:'Login'})
+      }
     }
   },
   computed: {
@@ -102,6 +102,33 @@ export default {
         padding: 4px;
         justify-content: space-between;
 
+        .header-left {
+          a {
+            border-radius: 3px;
+            border: 0;
+            text-decoration: none;
+            align-items: center;
+            background-color: hsla(0, 0%, 100%, .3);
+            box-shadow: none;
+            color: #fff;
+            display: flex;
+            font-weight: 700;
+            height: 32px;
+            line-height: 32px;
+            margin: 0 4px 0 0;
+            padding: 0;
+            white-space: nowrap;
+
+            span{
+              display: flex;
+              width: 32px;
+              justify-content: center;
+              align-items: center;
+              margin: 0;
+            }
+          }
+        }
+
         .header-center {
           .logo {
             cursor: pointer;
@@ -120,7 +147,7 @@ export default {
               height: 30px;
             }
 
-            a{
+            a {
               text-decoration: none;
             }
           }

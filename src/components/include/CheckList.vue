@@ -18,6 +18,7 @@
               ref="checklistCard"
               id="checklistCard"
               :min-height="30"
+              @keydown.enter.native="updateCheckListTitle"
           />
           <div class="checklist-title-edit-controls u-clearfix"><input
               class="nch-button nch-button--primary confirm mod-submit-edit js-save-checklist-title"

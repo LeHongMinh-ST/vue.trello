@@ -71,10 +71,12 @@ export default {
               localStorage.setItem('access_token', response.data.access_token)
               this.updateToken(response.data.access_token)
               this.updateLoginStatus(true)
-            }
-
-            if (this.$router.currentRoute.name !== 'Admin') {
-              this.$router.push('/admin')
+              api.getAuthUser().then((res)=>{
+                this.updateAuthUser(res.data)
+                if (this.$router.currentRoute.name !== 'Admin') {
+                  this.$router.push('/admin')
+                }
+              })
             }
           }).catch(() => {
             this.$message({message: 'Có 1 lỗi gì đó', type: 'error'});
@@ -346,8 +348,6 @@ export default {
       display: inline-flex;
       outline: 0;
       color: #93453F;
-
-
     }
 
     .registerBtn:hover {

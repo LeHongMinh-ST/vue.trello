@@ -2,26 +2,34 @@
   <div class="pop-over is-shown" data-elevation="1" :style="{left: offset.left+'px', top: offset.top+'px'}">
     <div class="no-back">
       <div class="pop-over-header js-pop-over-header"><span class="pop-over-header-title">Di chuyển thẻ</span><a
-          href="#" class="pop-over-header-close-btn icon-sm icon-close"></a></div>
+          href="#" class="pop-over-header-close-btn icon-sm icon-close" @click="closeMove"><i
+          class="el-icon-close"></i></a></div>
       <div>
         <div class="pop-over-content js-pop-over-content u-fancy-scrollbar js-tab-parent" style="max-height: 395px;">
           <div>
             <div>
               <div class="pop-over-section"><h4>Chọn đích đến</h4>
                 <div class="form-grid">
-                  <div class="button-link setting form-grid-child form-grid-child-threequarters"><span class="label">Danh sách</span><span
-                      class="value js-list-value">Test</span><label>Danh sách</label><select class="js-select-list">
-                    <option value="60433d196cb19624f8eb53b6" selected="selected">Test (hiện tại)</option>
-                    <option value="6044ca9b4e55244f692ebe6e">đấ</option>
-                    <option value="6044ca9b9641e1721da32ff0">đấ</option>
-                    <option value="6044ca9a11133617d117969d">dsadasda]</option>
-                  </select></div>
-                  <div class="button-link setting form-grid-child"><span class="label">Vị trí</span><span
-                      class="value js-pos-value">1</span><label>Vị trí</label><select class="js-select-position">
-                    <option value="top" selected="selected">1</option>
-                  </select></div>
+                  <div class="button-link setting form-grid-child form-grid-child-threequarters">
+                    <span class="label">Danh sách</span>
+                    <span class="value js-list-value">{{ nameList }}</span>
+                    <label>Danh sách</label>
+                    <select class="select-list" :value="nameList" @change="setNameList">
+                      <option v-for="item in list" :value="item.id" :key="item.id">{{ item.title }}</option>
+                    </select>
+                  </div>
+                  <div class="button-link setting form-grid-child">
+                    <span class="label">Vị trí</span>
+                    <span class="value js-pos-value">{{ Number(indexCard) + 1 }}</span>
+                    <label>Vị trí</label>
+                    <select class="select-position" :value="indexCard" @change="setIndexCard">
+                      <option v-for="item in directory.cards" :key="item.id" :value="item.index">
+                        {{ item.index + +1 }}
+                      </option>
+                    </select></div>
                 </div>
-                <input class="nch-button nch-button--primary wide js-submit" type="submit" value="Di chuyển"></div>
+                <input class="nch-button nch-button--primary wide js-submit" @click="move" type="submit"
+                       value="Di chuyển"></div>
             </div>
           </div>
         </div>
@@ -31,8 +39,45 @@
 </template>
 
 <script>
+import api from "@/api";
+
 export default {
-  name: "Move"
+  name: "Move",
+  props: ['offset', 'list'],
+  data() {
+    return {
+      nameList: "",
+      indexCard: this.offset.card.index,
+      idList: "",
+      directory: {}
+    }
+  },
+  methods: {
+    setNameList(e) {
+      this.idList = e.target.value
+      this.directory = this.list.find(value => value.id == this.idList);
+      this.nameList = this.directory.title
+      this.indexCard = 0
+    },
+    setIndexCard(e) {
+      this.indexCard = e.target.value
+    },
+    closeMove() {
+      this.$emit('closeMove')
+    },
+    move() {
+      let payload = {
+        index: this.indexCard,
+        directory_id: this.directory.id
+      }
+      api.changeCardList(payload, this.offset.card.id).then(() => {
+        this.$emit('updateCardList');
+        this.closeMove()
+      })
+    }
+
+  },
+
 }
 </script>
 
@@ -118,215 +163,102 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         padding: 0 12px 12px;
+        text-align: left;
 
-        div {
-          div {
-            div.edit-label {
-              label {
-                text-align: left;
-              }
+        h4 {
+          color: #5e6c84;
+          font-size: 12px;
+          font-weight: 500;
+          letter-spacing: .04em;
+          line-height: 16px;
+          margin-top: 16px;
+          text-transform: uppercase;
+        }
 
-              input {
-                margin: 4px 0 12px;
-                width: 100%;
-                outline: none;
-                border: none;
-                box-shadow: inset 0 0 0 2px #dfe1e6;
-                background-color: #fafbfc;
-                box-sizing: border-box;
-                border-radius: 3px;
-                display: block;
-                line-height: 20px;
-                padding: 8px 12px;
-                transition-property: background-color, border-color, box-shadow;
-                transition-duration: 85ms;
-                transition-timing-function: ease;
-              }
+        .form-grid {
+          display: flex;
+          flex-wrap: wrap;
+          width: 100%;
+          margin-bottom: 10px;
 
-              input:focus {
-                border-color: #0079BF !important;
-              }
+          .setting {
+            height: 48px;
+            float: left;
+            position: relative;
+            margin-top: 0;
+            flex: 3;
+            margin-right: 8px;
+            background-color: rgba(9, 30, 66, .04);
+            box-shadow: none;
+            border: none;
+            border-radius: 3px;
+            box-sizing: border-box;
+            cursor: pointer;
+            display: block;
+            max-width: 300px;
+            overflow: hidden;
+            padding: 6px 12px;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            -webkit-user-select: none;
+            user-select: none;
+            white-space: nowrap;
+            transition-property: background-color, border-color, box-shadow;
+            transition-duration: 85ms;
+            transition-timing-function: ease;
 
-              .add-checklist:focus {
-                border-color: #0079BF !important;
-              }
-
-              .add-checklist {
-                background-color: #49852e;
-                box-shadow: none;
-                border: none;
-                color: #fff;
-                outline: 0;
-                width: 30%;
-              }
-
-              .u-clearfix {
-                clear: both;
-                content: "";
-                display: table;
-
-                .label-item {
-                  float: left;
-                  height: 32px;
-                  margin: 0 6px 6px 0;
-                  padding: 0;
-                  width: 48px;
-                }
-
-                input {
-                  background-color: #49852e;
-                  box-shadow: none;
-                  border: none;
-                  color: #fff;
-                  outline: 0;
-                  padding-left: 24px;
-                  padding-right: 24px;
-                }
-
-                input.remove-label{
-                  background-color: #cf513d;
-                  box-shadow: none;
-                  border: none;
-                  color: #fff;
-                }
-
-
-              }
-
-              .edit-btn{
-                display: flex;
-                justify-content: space-between;
-
-                input{
-                  width: 25%;
-                }
-              }
-
-              .edit-labels-no-color-section {
-                display: flex;
-
-                .edit-labels-no-color-section-color {
-
-                }
-
-                .edit-labels-no-color-section-text {
-                  text-align: left;
-
-                  .u-bottom {
-                    margin: 0;
-                  }
-
-                  .quiet {
-                    color: #5e6c84;
-                  }
-
-                }
-
-              }
-            }
-
-            .label-search{
-              margin: 4px 0 12px;
-              width: 100%;
-              outline: none;
-              border: none;
-              box-shadow: inset 0 0 0 2px #dfe1e6;
-              background-color: #fafbfc;
-              box-sizing: border-box;
-              -webkit-appearance: none;
-              border-radius: 3px;
+            .label {
+              color: #5e6c84;
               display: block;
+              font-size: 12px;
+              line-height: 16px;
+              margin-bottom: 0;
+            }
+
+            .value {
+              display: block;
+              font-size: 14px;
               line-height: 20px;
-              padding: 8px 12px;
-              transition-property: background-color,border-color,box-shadow;
-              transition-duration: 85ms;
-              transition-timing-function: ease;
-            }
-            .label-search:focus{
-              border: #0079BF!important;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
 
-            .pop-over-section {
-              margin-top: 12px;
-
-              h4 {
-                color: #5e6c84;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: .04em;
-                line-height: 16px;
-                margin-top: 16px;
-                text-transform: uppercase;
-                text-align: left;
-              }
-
-              .edit-labels-pop-over {
-                margin-bottom: 8px;
-                list-style: none;
-                padding: 0;
-
-
-                li {
-                  padding-right: 36px;
-                  position: relative;
-
-                  .card-label-edit-button {
-                    cursor: pointer;
-                    border-radius: 3px;
-                    padding: 6px;
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    height: 20px;
-                    font-size: 16px;
-                    line-height: 20px;
-                    width: 20px;
-                    display: inline-block;
-                    font-family: trellicons;
-                    font-style: normal;
-                    font-weight: 400;
-                    text-align: center;
-                    text-decoration: none;
-                    vertical-align: bottom;
-                  }
-
-                  .card-label-edit-button:hover {
-                    background-color: #ECEDF0;
-                  }
-
-
-                }
-              }
-
-              div {
-                button {
-                  background-color: #e4f0f6;
-                  box-shadow: none;
-                  border: none;
-                  outline: 0;
-                  width: 100%;
-                  cursor: pointer;
-                  box-sizing: border-box;
-                  border-radius: 3px;
-                  display: inline-block;
-                  line-height: 20px;
-                  margin-bottom: 8px;
-                  padding: 6px 12px;
-                  text-decoration: none;
-                  position: relative;
-                }
-
-
-              }
-            }
-
-            .btn-confirm {
-              background-color: #EB5A46;
+            .select-list {
+              border: none;
+              cursor: pointer;
+              height: 50px;
+              left: 0;
+              margin: 0;
+              opacity: 0;
+              position: absolute;
+              top: 0;
+              z-index: 2;
               width: 100%;
-              color: #fff;
-              outline: none;
+            }
+
+            .select-position {
+              border: none;
+              cursor: pointer;
+              height: 50px;
+              left: 0;
+              margin: 0;
+              opacity: 0;
+              position: absolute;
+              top: 0;
+              z-index: 2;
+              width: 100%;
             }
           }
+
+
+        }
+
+        input {
+          background-color: #49852e;
+          box-shadow: none;
+          border: none;
+          color: #fff;
+          outline: 0;
         }
       }
 

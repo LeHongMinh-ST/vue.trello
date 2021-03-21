@@ -143,14 +143,14 @@ export default {
             name: this.titleLabel,
             color: item
           }
-          api.addLabel(data, id).then((res) => {
-            console.log(res)
+          api.addLabel(data, id).then(() => {
             this.resetLabel()
+            this.getDetailCard()
+            this.$emit('reloadLabel', this.card.id)
+            this.showAddLabel = !this.showAddLabel;
           })
         })
-        this.getDetailCard()
-        this.$emit('reloadLabel', this.card.id)
-        this.showAddLabel = !this.showAddLabel;
+
       }
     },
     resetLabel() {
@@ -183,16 +183,13 @@ export default {
       })
     },
     deleteLabel() {
-      let data = {
-        name: this.titleLabel,
-        color: this.isActive.color,
-      }
-
-      api.deleteLabels(data, this.isActive.id).then(() => {
+      api.deleteLabels(this.isActive.id).then(() => {
+        this.resetLabel()
         this.getDetailCard()
         this.$emit('reloadLabel', this.card.id)
-        this.resetLabel()
-        this.backLabel()
+        this.showDeleteLabel = false
+        this.showEditLabel = false
+        this.showAddLabel = false
       })
     },
     showConfirmDelete() {
@@ -211,7 +208,9 @@ export default {
         this.getDetailCard()
         this.$emit('reloadLabel', this.card.id)
         this.resetLabel()
-        this.backLabel()
+        this.showDeleteLabel = false
+        this.showEditLabel = false
+        this.showAddLabel = false
       })
     },
     backLabel() {

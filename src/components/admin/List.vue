@@ -3,7 +3,7 @@
     <div class="listContent">
       <div class="listHeader">
         <textarea class="list-header-name list-header-edit-name"
-                  @keydown.enter="updateListTitle" name="" id=""
+                  @keydown.enter="updateListTitle" @blur="updateListTitle" name="" id=""
                   cols="30" rows="10" :value="listTitle" placeholder="Nhập vào tiêu đề danh sách..."
         ></textarea>
         <div class="menu" @click="openActionList"><i class="el-icon-more"></i></div>
@@ -15,7 +15,7 @@
             item-key="id"
             :animation="100"
             group="todo"
-            :move="moveTodo"
+            @end="moveTodo"
         >
           <Todo v-for="(card,index) in item.cards" @openQuickEdit="openQuickEdit" :key="index"
                 @updateData="updateCardList"
@@ -58,30 +58,28 @@ export default {
   },
   methods: {
     moveTodo(e) {
-      let id = e.draggedContext.element.id
+      let id = e.clone.id
       let todo = e.to.parentElement
       let directory = todo.parentElement;
+      let toId = directory.parentElement.getAttribute('id')
 
       let payload = {
-        index: e.draggedContext.futureIndex,
-        directory_id: directory.parentElement.getAttribute('id')
+        index: e.newIndex,
+        directory_id: toId
       }
-
-      if (id !== e.draggedContext.futureIndex) {
-        api.changeCardList(payload, id).then(() => {
-          this.$emit('updateCardList');
-        })
-      }
+      api.changeCardList(payload, id).then(() => {
+        this.$emit('updateCardList');
+      })
 
     },
-    openActionList(e){
+    openActionList(e) {
       let rect = e.target.getBoundingClientRect();
       let data = {
         left: rect.left,
         top: rect.top,
         id: this.item.id
       };
-      this.$emit('openActionList',data)
+      this.$emit('openActionList', data)
 
     },
     loadTitle() {
@@ -106,8 +104,7 @@ export default {
       this.$emit('updateListTitle', updateTile);
     },
     handleAddCard(data) {
-      api.addCards(data).then((response) => {
-        console.log(response)
+      api.addCards(data).then(() => {
         this.updateCardList();
       })
     },
@@ -120,11 +117,11 @@ export default {
     closeControlModal() {
       this.$emit('closeControlModal')
     },
-    openQuickEdit(data){
-      this.$emit('openQuickEdit',data)
+    openQuickEdit(data) {
+      this.$emit('openQuickEdit', data)
     },
-    openDetailCard(id){
-      this.$emit('openDetailCard',id)
+    openDetailCard(id) {
+      this.$emit('openDetailCard', id)
     }
   },
   mounted() {

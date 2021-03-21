@@ -29,9 +29,9 @@
           <div class="badges">
             <span class="js-badges">
             <div class="badge js-due-date-badge mod-due-date"
-               :class="[{'is-due-complete':isComplete},{'is-due-die': isDeadline===2},{'is-due-near': isDeadline===1}]"
-               title="This card is complete."
-               v-if="card.deadline!=null">
+                 :class="[{'is-due-complete':isComplete},{'is-due-die': isDeadline===2},{'is-due-near': isDeadline===1}]"
+                 title="This card is complete."
+                 v-if="card.deadline!=null">
             <span class="badge-icon icon-sm icon-clock badge-due-icon"> <i
                 class="el-icon-alarm-clock badge-due-icon"></i></span>
             <span class="badge-icon icon-sm icon-checkbox-checked badge-due-checked" @click="changeStatusTodo">
@@ -48,6 +48,7 @@
         </div>
       </div>
       <input class="nch-button nch-button--primary wide js-save-edits" @click="updateCard" type="submit" value="Lưu">
+      <a href="#" class="btn-close-quick-edit"><i class="el-icon-close"></i></a>
       <div class="quick-card-editor-buttons fade-in">
         <a class="quick-card-editor-buttons-item" @click="openModal" href="#">
           <span class="icon-sm icon-card light"><i class="el-icon-bank-card"></i></span>
@@ -67,13 +68,17 @@
           >
           </el-date-picker>
         </a>
-        <a class="quick-card-editor-buttons-item js-edit-labels" @click="deleteCard" href="#"><span
+        <a class="quick-card-editor-buttons-item js-edit-labels" @click="moveCard" href="#"><span
             class="icon-sm icon-label light"><i class="el-icon-right"></i></span><span
             class="quick-card-editor-buttons-item-text">Di chuyển</span>
         </a>
         <a class="quick-card-editor-buttons-item js-edit-labels" @click="deleteCard" href="#"><span
+            class="icon-sm icon-label light"><i class="el-icon-delete"></i></span><span
+            class="quick-card-editor-buttons-item-text">Xóa thẻ</span>
+        </a>
+        <a class="quick-card-editor-buttons-item js-edit-labels" @click="closeQuickEdit" href="#"><span
             class="icon-sm icon-label light"><i class="el-icon-close"></i></span><span
-            class="quick-card-editor-buttons-item-text">Xóa</span>
+            class="quick-card-editor-buttons-item-text">Đóng</span>
         </a>
         <div id="convert-card-role-button-react-root" class="">
           <div class="js-react-root"></div>
@@ -92,20 +97,20 @@ import api from "@/api";
 export default {
   name: "QuickEdit",
   props: ['card', 'offset'],
-  data(){
-    return{
+  data() {
+    return {
 
       isComplete: false,
       isDeadline: 0,
-      deadLine:''
+      deadLine: ''
     }
   },
   methods: {
     ...mapMutations('home', [
       'showLable'
     ]),
-    deleteCard(){
-      this.$emit('deleteCard',this.card.id)
+    deleteCard() {
+      this.$emit('deleteCard', this.card.id)
       this.closeQuickEdit()
     },
     closeQuickEdit() {
@@ -120,13 +125,22 @@ export default {
       };
       this.$emit('showControl', data)
     },
-    updateCard(){
+    moveCard(e) {
+      let rect = e.target.getBoundingClientRect();
+      let data = {
+        left: rect.left,
+        top: rect.top,
+        card: this.card
+      };
+      this.$emit('showMove', data)
+    },
+    updateCard() {
       let data = {
         id: this.card.id,
         title: document.getElementById('quickEditCard').value
       }
 
-      this.$emit('updateCard',data)
+      this.$emit('updateCard', data)
       this.closeQuickEdit()
     },
     openModal() {

@@ -26,6 +26,7 @@
               placeholder="Thêm mô tả chi tiết hơn..."
               id="checklistChildCard"
               :min-height="30"
+              @keydown.enter.native="updateCheckListChildTitle"
           />
           <p class="edits-error error"></p>
           <div class="edit-controls u-clearfix"><input

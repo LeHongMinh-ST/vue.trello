@@ -9,9 +9,9 @@
         <div class="pop-over-content js-pop-over-content u-fancy-scrollbar js-tab-parent" style="max-height: 475px;">
           <div>
             <div>
-              <ul class="pop-over-list">
-                <li><a class="js-add-card" href="#">Thêm thẻ...</a></li>
-              </ul>
+<!--              <ul class="pop-over-list">-->
+<!--                <li><a class="js-add-card" href="#">Thêm thẻ...</a></li>-->
+<!--              </ul>-->
               <ul class="pop-over-list">
                 <li><a class="js-close-list remove-list" @click="deleteList" href="#">Xóa danh sách này!</a></li>
               </ul>

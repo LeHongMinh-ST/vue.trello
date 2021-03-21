@@ -3,7 +3,7 @@
     <template #login>
       <main class="loginWrap">
         <div class="logoWrap">
-          <img class="logo" src="../../assets/image/logo.jpg" alt=""></div>
+          <img class="logo" src="../../assets/logowab.png" alt=""></div>
         <el-form :model="registerForm" :rules="rules" ref="ruleForm">
           <div class="formInputWrap">
             <div class="sui-input-wrap">
@@ -315,9 +315,9 @@ export default {
 
   .submitButton {
     width: 100%;
-    height: 50px;
+    height: 40px;
     border: none;
-    background: #5cdee4;
+    background: #93453F;
     color: #fff;
     text-decoration: none;
     font-size: 14px;
@@ -371,9 +371,7 @@ export default {
       margin: 0;
       display: inline-flex;
       outline: 0;
-      color: #5cdee4;
-
-
+      color: #93453F;
     }
 
     .registerBtn:hover {

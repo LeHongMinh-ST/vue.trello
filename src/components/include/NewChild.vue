@@ -5,7 +5,7 @@
         placeholder="Thêm một mục"
         id="addChild"
         :min-height="30"
-        @keydown.enter="addNewChild"
+        @keydown.enter.native="addNewChild"
     />
     <div class="checklist-add-controls u-clearfix">
       <input

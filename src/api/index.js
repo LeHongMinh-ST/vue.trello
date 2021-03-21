@@ -187,11 +187,10 @@ export default {
             data: data
         })
     },
-    deleteLabels(data, id) {
+    deleteLabels( id) {
         return apiAxios({
             method: 'delete',
             url: '/labels/' + id,
-            data: data
         })
     },
 

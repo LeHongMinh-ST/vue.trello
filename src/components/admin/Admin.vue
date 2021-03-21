@@ -39,7 +39,7 @@
                     @closeLabelModal="closeControlModal"
                     :offset="offset" @reloadLabel="reloadLabel"/>
       <QuickEdit v-if="showQuickEdit" @updateCard="quickEditCardTitle" @showControl="handleShowControl"
-                 @deleteCard="deleteCard" @closeQuickEdit="closeQuickEdit" :card="card"
+                 @deleteCard="deleteCard" @closeQuickEdit="closeQuickEdit" @showMove="showMove" :card="card"
                  :offset="offsetEdit" @openModal="openDetailCard" @updateCardList="getDataList"/>
       <el-dialog v-if="dialogFormVisible" id="detailTodo" class="dialogTodo" :append-to-body="true" width="40%"
                  :show-close="false"
@@ -182,7 +182,8 @@
                 <div v-if="cardDetail.check_lists.length > 0"
                      class="checklist-list window-module js-checklist-list js-no-higher-edits ui-sortable">
                   <CheckList v-for="(item, index) in cardDetail.check_lists" @updateCheckList="reloadDetail"
-                             :checkList="item" @openDeleteCheckList="openDeleteCheckList" :key="index" :card="cardDetail"/>
+                             :checkList="item" @openDeleteCheckList="openDeleteCheckList" :key="index"
+                             :card="cardDetail"/>
                 </div>
               </div>
               <DialogSibar @updateDetailCard="getDetailCard(cardDetail.id)" @showControl="handleShowControl"
@@ -197,7 +198,9 @@
 
       <Action v-if="showActionList" @closeAction="closeActionList" @deleteList="deleteList" :offset="offset"
               v-click-outside="closeActionList"/>
-      <Delete v-if="showDelete" :offset="offsetDelete" @reloadList="reloadList" @closeDelete="closeDelete" @reloadCard="reloadDetail"/>
+      <Delete v-if="showDelete" :offset="offsetDelete" @reloadList="reloadList" @closeDelete="closeDelete"
+              @reloadCard="reloadDetail"/>
+      <Move v-if="showModalMove" :offset="offsetMove" @updateCardList="getDataList" @closeMove="closeMove" :list="list"/>
     </template>
   </AdminLayout>
 </template>
@@ -220,6 +223,7 @@ import Action from "@/components/include/Action";
 import File from "@/components/include/File";
 import EditFile from "@/components/include/EditFile";
 import Delete from "@/components/include/Delete";
+import Move from "@/components/include/Move";
 
 export default {
   name: "Admin",
@@ -245,10 +249,13 @@ export default {
       deadline: '',
       description: '',
       showEditFile: false,
-      showDelete: false
+      showDelete: false,
+      offsetMove: {},
+      showModalMove: false
     }
   },
   components: {
+    Move,
     AdminLayout,
     List,
     draggable,
@@ -272,12 +279,9 @@ export default {
       let payload = {
         index: e.draggedContext.futureIndex,
       }
-
-      if (id !== e.draggedContext.futureIndex) {
-        api.changeIndexList(payload, id).then(() => {
-          this.getDataList()
-        })
-      }
+      api.changeIndexList(payload, id).then(() => {
+        this.getDataList()
+      })
 
     },
     openEditFile(data) {
@@ -291,6 +295,9 @@ export default {
     },
     closeActionList() {
       this.showActionList = false
+    },
+    closeMove() {
+      this.closeAll()
     },
     deleteList(id) {
 
@@ -312,8 +319,8 @@ export default {
     },
     loadData() {
       this.data = this.list
-    }
-    , loadDescription() {
+    },
+    loadDescription() {
       this.description = this.cardDetail.description;
     }
     ,
@@ -387,9 +394,13 @@ export default {
         this.getDataList()
       })
     },
-    reloadList(){
+    reloadList() {
       this.closeModal()
       this.getDataList()
+    },
+    showMove(data) {
+      this.offsetMove = data
+      this.showModalMove = true
     }
     ,
     openControlLabel(e) {
@@ -504,7 +515,7 @@ export default {
       this.showEditFile = false;
       this.dialogFormVisible = false;
       this.showDelete = false
-
+      this.showModalMove = false
     },
     checkComplate() {
       if (this.cardDetail.status == 0) {

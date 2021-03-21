@@ -211,6 +211,27 @@
     input:hover{
       opacity: 0.9;
     }
+    .btn-close-quick-edit{
+      color: hsla(0, 0%, 100%, .6);
+      padding: 9px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition-property: transform, color;
+      transition-duration: .15s;
+      height: 32px;
+      line-height: 32px;
+      width: 32px;
+      font-size: 24px;
+      display: inline-block;
+      font-family: trellicons;
+      font-style: normal;
+      font-weight: 400;
+      text-align: center;
+      text-decoration: none;
+      vertical-align: bottom;
+      cursor: pointer;
+    }
 
     .quick-card-editor-buttons{
       opacity: 1;

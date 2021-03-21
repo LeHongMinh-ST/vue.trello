@@ -7,7 +7,7 @@
             <div class="info">
               <div class="infoAvatar">
                 <div class="avatarCover">
-                  <img v-if="authUser.avatar!=null" :src="'http://vuecourse.zent.edu.vn/storage/products/'+authUser.avatar" alt="">
+                  <img v-if="authUser.avatar !=null " :src="'http://vuecourse.zent.edu.vn/storage/users/'+authUser.avatar" alt="">
                   <img v-else :src="profile.avatar" alt="">
                 </div>
               </div>

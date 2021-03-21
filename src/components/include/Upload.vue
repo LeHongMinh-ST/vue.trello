@@ -20,7 +20,7 @@ export default {
   ],
   data (){
     return {
-      base_url:'',
+      base_url:'http://vuecourse.zent.edu.vn/storage/users/',
       url_default:'',
       url_image:'',
       file_img:''
